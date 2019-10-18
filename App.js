@@ -1,20 +1,21 @@
 import React, {Component} from 'react';
 import {SafeAreaView, View, FlatList, StyleSheet, Text} from 'react-native';
+import {Maze, GridRow, GridCell} from './MazeCommunication/Maze';
 
 const DATA1 = {
   id: '1',
   data: [
     {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
+      title: 'A',
     },
     {
       id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
+      title: 'B',
     },
     {
       id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
+      title: 'C',
     },
   ],
 };
@@ -24,15 +25,15 @@ const DATA2 = {
   data: [
     {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
+      title: 'D',
     },
     {
       id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
+      title: 'E',
     },
     {
       id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
+      title: 'F',
     },
   ],
 };
@@ -42,15 +43,15 @@ const DATA3 = {
   data: [
     {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
+      title: 'G',
     },
     {
       id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
+      title: 'H',
     },
     {
       id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
+      title: 'I',
     },
   ],
 };
@@ -86,11 +87,9 @@ export default class HelloWorldApp extends Component {
       uri:
         'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
     };
-    let item = this.getItem;
-    let flatlistColumn = this.getFlatListTamp;
     return (
       <SafeAreaView style={styles.container}>
-        {flatlistColumn(item)}
+        {this.getFlatList(this.getItem)}
       </SafeAreaView>
     );
   }
@@ -100,33 +99,17 @@ export default class HelloWorldApp extends Component {
       <FlatList
         horizontal={true}
         data={DATA}
-        renderItem={({datar}) => (
+        renderItem={datar => (
           <FlatList
             horizontal={false}
-            data={datar.data}
-            renderItem={({datac}) => renderItem(datac)}
+            data={datar.item.data}
+            renderItem={datac => renderItem(datac.item)}
             keyExtractor={datac => datac.id}
           />
         )}
         keyExtractor={datar => datar.id}
       />
     );
-  }
-
-  getFlatListTamp(renderItem) {
-    console.log(DATA[0].data[0].title);
-    return (
-      <FlatList
-        horizontal={false}
-        data={DATA[0].data}
-        renderItem={datac => renderItem(datac.item)}
-        keyExtractor={item => item.id}
-      />
-    );
-  }
-
-  getId(datac) {
-    return datac.id;
   }
 
   getItem(item) {
