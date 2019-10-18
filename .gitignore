@@ -83,7 +83,7 @@ buck-out
 .watchmanconfig
 
 # Android
-/android/
+/android/*
 
 # Node
 node_modules
@@ -119,7 +119,7 @@ RNTester/build
 /template/ios/Podfile.lock
 /RNTester/Gemfile.lock
 
-/ios/
+/ios/*
 
 # Ignore RNTester specific Pods, but keep the __offline_mirrors__ here.
 RNTester/Pods/*
