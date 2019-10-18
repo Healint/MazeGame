@@ -1,16 +1,35 @@
+import {Hurdle, Loot} from './Actors';
+import interopRequireDefault from '@babel/runtime/helpers/esm/interopRequireDefault';
+
+const UNIVERSE_CONSTANTS = {
+  hurdle_proba: 0.05,
+  loot_proba: 0.03,
+};
 export class Cell {
   // 0: Floor
   // 1: Wall
-  x = null;
-  y = null;
-  floor = null;
-  character = null;
+  actor: any;
+  floor: number;
+  x: number;
+  y: number;
 
-  constructor(x: null, y: null, floor: null, character: null) {
+  constructor(x: null, y: null, floor: null, actor: null) {
     this.x = x;
     this.y = y;
     this.floor = floor;
-    this.character = character;
+    this.actor = actor;
+
+    let rng = Math.random();
+
+    // generate all actors that are not the player
+    if (rng < UNIVERSE_CONSTANTS.hurdle_proba) {
+      this.actor = new Hurdle();
+    } else if (
+      rng <
+      UNIVERSE_CONSTANTS.hurdle_proba + UNIVERSE_CONSTANTS.loot_proba
+    ) {
+      this.actor = new Loot();
+    }
   }
 }
 

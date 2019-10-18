@@ -1,26 +1,5 @@
 import {Cell, Maze} from './Maze';
-
-class Player {
-  constructor(char: string, cell: *, hp: number, turns: number, actions: null) {
-    this.char = '@';
-    this.cell = cell;
-    this.hp = 100;
-    this.turns = 0;
-    this.actions = {};
-  }
-
-  as_dict() {
-    return {hp: this.hp, turns: this.turns, actions: this.actions};
-  }
-
-  add_message(message) {
-    if (this.actions.hasOwnProperty(this.turns)) {
-      this.actions[this.turns].push(message);
-    } else {
-      this.actions[this.turns] = [message];
-    }
-  }
-}
+import {Player} from './Actors';
 
 export class WorldState {
   maze: Maze = null;
@@ -58,16 +37,16 @@ export class WorldState {
     // # check destination
     let move_x, move_y;
 
-    if (action == 'LEFT') {
+    if (action === 'LEFT') {
       move_x = 0;
       move_y = -1;
-    } else if (action == 'RIGHT') {
+    } else if (action === 'RIGHT') {
       move_x = 0;
       move_y = 1;
-    } else if (action == 'UP') {
+    } else if (action === 'UP') {
       move_x = -1;
       move_y = 0;
-    } else if (action == 'DOWN') {
+    } else if (action === 'DOWN') {
       move_x = 1;
       move_y = 0;
     } else {
@@ -90,6 +69,21 @@ export class WorldState {
     if (destination_cell.floor !== 0) {
       this.player.add_message('Unable to move, trying to move to a wall');
       return false;
+    }
+
+    // checks for interactions with any hurdle
+    if (destination_cell.actor !== null) {
+      let persistent_hurdle = destination_cell.actor.process_interaction(
+        this.player,
+      );
+      if (persistent_hurdle === false) {
+        destination_cell.actor = null;
+        console.log('Removing actor:' + destination_cell.actor);
+      } else {
+        // hurdle stays, no movement
+        this.player.add_message('Unable to move, a hurdle blocked you');
+        return false;
+      }
     }
 
     console.log('Current cell:' + current_cell);
