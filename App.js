@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {SafeAreaView, View, FlatList, StyleSheet, Text} from 'react-native';
 
 import {MazeActionProcessor} from './MazeCommunication/MazeActionProcessor';
+import {WorldState} from './MazeBackend/GameWorld';
 
 const DATA = [
   {
@@ -10,7 +11,7 @@ const DATA = [
   },
   {
     id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
+    title: 'BOBOCDIUCD Item',
   },
   {
     id: '58694a0f-3da1-471f-bd96-145571e29d72',
@@ -47,6 +48,11 @@ export default class HelloWorldApp extends Component {
       uri:
         'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
     };
+    let world = new WorldState(5, 5);
+    let state = null;
+    state = world.submit_player_action('DOWN');
+    console.log(world.player.actions);
+
     let actionProcessor = new MazeActionProcessor();
     actionProcessor.startMaze();
     let item = this.getItem;
