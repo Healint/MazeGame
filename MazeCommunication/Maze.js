@@ -6,20 +6,14 @@ export class MazeBuilder {
   }
 
   build() {
-    var row = this.data.entries().next();
-    var r = 0;
     var gridRows = [];
-    while (row) {
-      var c = 0;
-      var col = row.entries().next();
-      var gridCells = [];
-      while (col) {
-        gridCells.push(new GridCell(c, col));
-        c++;
-      }
-      gridRows.push(new GridRow(r, gridCells));
-      r++;
-    }
+    this.data.forEach((items, number, data) => {
+      var gridRow = new GridRow('' + number, []);
+      gridRows.push(gridRow);
+      items.forEach((item, idx, data1) => {
+        gridRow.items.push(new GridCell('' + idx, item));
+      });
+    });
     return new Maze('Awesome maze', gridRows);
   }
 }

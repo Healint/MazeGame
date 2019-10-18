@@ -1,62 +1,6 @@
 import React, {Component} from 'react';
 import {SafeAreaView, View, FlatList, StyleSheet, Text} from 'react-native';
-import {Maze, GridRow, GridCell} from './MazeCommunication/Maze';
-
-const DATA1 = {
-  id: '1',
-  data: [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'A',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'B',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'C',
-    },
-  ],
-};
-
-const DATA2 = {
-  id: '2',
-  data: [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'D',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'E',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'F',
-    },
-  ],
-};
-
-const DATA3 = {
-  id: '3',
-  data: [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'G',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'H',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'I',
-    },
-  ],
-};
-
-const DATA = [DATA1, DATA2, DATA3];
+import {Maze, GridRow, GridCell, MazeBuilder} from './MazeCommunication/Maze';
 
 function Item({title}) {
   return (
@@ -73,47 +17,60 @@ const styles = StyleSheet.create({
   item: {
     backgroundColor: '#f9c2ff',
     padding: 1,
+    height: 15,
+    width: 15,
     marginVertical: 1,
     marginHorizontal: 1,
   },
   title: {
-    fontSize: 32,
+    fontSize: 16,
   },
 });
 
 export default class HelloWorldApp extends Component {
   render() {
+    var i;
+    var j;
+    var rows = [];
+    let size = 20;
+    for (i = 0; i < size; i++) {
+      let cols = [];
+      for (j = 0; j < size; j++) {
+        // cols.push('' + (i * size + j));
+        cols.push('#');
+      }
+      rows.push(cols);
+    }
+    rows[0][0] = '*';
+    let maze = new MazeBuilder(rows).build();
+
+    var flatList: FlatList;
+
+    flatList = this.getFlatList(maze);
+
     let pic = {
       uri:
         'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
     };
-    return (
-      <SafeAreaView style={styles.container}>
-        {this.getFlatList(this.getItem)}
-      </SafeAreaView>
-    );
+    return <SafeAreaView style={styles.container}>{flatList}</SafeAreaView>;
   }
 
-  getFlatList(renderItem) {
+  getFlatList(maze: Maze) {
     return (
       <FlatList
-        horizontal={true}
-        data={DATA}
-        renderItem={datar => (
+        horizontal={false}
+        data={maze.rows}
+        extraData={maze}
+        renderItem={rowVItem => (
           <FlatList
-            horizontal={false}
-            data={datar.item.data}
-            renderItem={datac => renderItem(datac.item)}
-            keyExtractor={datac => datac.id}
+            horizontal={true}
+            data={rowVItem.item.items}
+            renderItem={cellVItem => <Item title={cellVItem.item.item} />}
+            keyExtractor={cell => cell.cellId}
           />
         )}
-        keyExtractor={datar => datar.id}
+        keyExtractor={row => row.rowId}
       />
     );
-  }
-
-  getItem(item) {
-    console.log('item id: ' + item.id);
-    return <Item title={item.title} />;
   }
 }
