@@ -119,6 +119,8 @@ RNTester/build
 /template/ios/Podfile.lock
 /RNTester/Gemfile.lock
 
+/ios/
+
 # Ignore RNTester specific Pods, but keep the __offline_mirrors__ here.
 RNTester/Pods/*
 !RNTester/Pods/__offline_mirrors
