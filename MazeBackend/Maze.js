@@ -1,5 +1,6 @@
-import {Hurdle, Loot} from './Actors';
-import interopRequireDefault from '@babel/runtime/helpers/esm/interopRequireDefault';
+import {HurdleFactory} from './Actors/Hurdles';
+import {LootFactory} from './Actors/Loot';
+import {MazeExit} from './Actors/Actors';
 
 const UNIVERSE_CONSTANTS = {
   hurdle_proba: 0.05,
@@ -13,6 +14,10 @@ export class Cell {
   x: number;
   y: number;
 
+  toString() {
+    return `Cell(x=${this.x},y=${this.y},actor=${this.actor})`;
+  }
+
   constructor(x: null, y: null, floor: null, actor: null) {
     this.x = x;
     this.y = y;
@@ -23,12 +28,12 @@ export class Cell {
 
     // generate all actors that are not the player
     if (rng < UNIVERSE_CONSTANTS.hurdle_proba) {
-      this.actor = new Hurdle();
+      this.actor = HurdleFactory();
     } else if (
       rng <
       UNIVERSE_CONSTANTS.hurdle_proba + UNIVERSE_CONSTANTS.loot_proba
     ) {
-      this.actor = new Loot();
+      this.actor = LootFactory();
     }
   }
 }
@@ -54,6 +59,7 @@ export class Maze {
         maze.push(row);
       }
     }
+    maze[this._nb_rows][this._nb_columns].actor = new MazeExit();
     return maze;
   }
 

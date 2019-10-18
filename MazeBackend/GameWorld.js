@@ -1,5 +1,5 @@
 import {Cell, Maze} from './Maze';
-import {Player} from './Actors';
+import {Player} from './Actors/Actors';
 
 export class WorldState {
   maze: Maze = null;
@@ -72,7 +72,8 @@ export class WorldState {
     }
 
     // checks for interactions with any hurdle
-    if (destination_cell.actor !== null) {
+    if (destination_cell.actor !== undefined) {
+      console.log(destination_cell.actor);
       let persistent_hurdle = destination_cell.actor.process_interaction(
         this.player,
       );
