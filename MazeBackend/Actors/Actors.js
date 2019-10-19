@@ -1,7 +1,3 @@
-export function get_random_from_list(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
 export class Actor {
   char = 'x'; // base representation of the actor
   max_view_distance: number = 99; // how far can this hurdle be seen. 0 means invisible, 99 always visible
@@ -15,12 +11,6 @@ export class Actor {
     // Returns true if the hurdle persist, and false if it disappears
     // If the hurdle persist, then movement is blocked
     return true;
-  }
-
-  // utility functions
-
-  get_random_number(max) {
-    return Math.floor(Math.random() * max) + 1;
   }
 }
 

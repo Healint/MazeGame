@@ -1,4 +1,5 @@
-import {Actor, get_random_from_list} from './Actors';
+import {Actor} from './Actors';
+import {get_random_from_list, get_random_number} from '../Lib/lib';
 
 export function HurdleFactory() {
   const items = ['SPIKES', 'MINE', 'SUPERGLUE'];
@@ -23,7 +24,7 @@ class Spikes extends Actor {
   }
 
   process_interaction(player) {
-    let hp_loss = this.get_random_number(10) + 5;
+    let hp_loss = get_random_number(10) + 5;
     player.add_message(
       `You walked on spikes ! You lose  ${hp_loss} hit points`,
     );
@@ -40,8 +41,8 @@ class Mine extends Actor {
   }
 
   process_interaction(player) {
-    let hp_loss = this.get_random_number(20) + 10;
-    let turn_loss = this.get_random_number(3) + 3;
+    let hp_loss = get_random_number(20) + 10;
+    let turn_loss = get_random_number(3) + 3;
     player.add_message(
       'You stumbled upon a demonic mine ! You lose ' +
         hp_loss +
@@ -63,7 +64,7 @@ class SuperGlue extends Actor {
   }
 
   process_interaction(player) {
-    let turn_loss = this.get_random_number(10) + 1;
+    let turn_loss = get_random_number(10) + 1;
     player.add_message(
       'Demons have covered this place with glue! It takes ' +
         turn_loss +
