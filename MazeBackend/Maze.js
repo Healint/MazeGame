@@ -49,17 +49,29 @@ export class Maze {
     this._map = this.generate();
   }
 
+  toString() {
+    return `Maze(_nb_columns=${this._nb_columns},_nb_rows=${this._nb_rows})`;
+  }
+
   generate() {
-    let maze = [];
-    let x, y;
-    for (x = 0; x < this._nb_rows; x++) {
-      let row = [];
-      for (y = 0; y < this._nb_columns; y++) {
-        row.push(new Cell(x, y, 0));
-        maze.push(row);
+    let maze = new Array(this._nb_rows);
+
+    // creating empty array
+    for (let i = 0; i < maze.length; i++) {
+      maze[i] = new Array(this._nb_columns);
+    }
+
+    // adding cells
+    for (let i = 0; i < maze.length; i++) {
+      let row = maze[i];
+      for (let j = 0; j < row.length; j++) {
+        row[j] = new Cell(i, j, 0);
       }
     }
-    maze[this._nb_rows][this._nb_columns].actor = new MazeExit();
+
+    // add the exit
+    let cell = maze[this._nb_rows - 1][this._nb_columns - 1];
+    cell.actor = new MazeExit();
     return maze;
   }
 
