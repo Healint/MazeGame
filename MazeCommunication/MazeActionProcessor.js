@@ -67,6 +67,7 @@ export class MazeActionProcessor {
 
   initializeWorld(height: number, width: number) {
     this._worldState = new WorldState(height, width);
+    console.log('maze initialized');
   }
 
   currentMaze() {

@@ -16,6 +16,7 @@ const ASSET_MAP = {
   '@': require('./images/koala.png'),
   H: require('./images/penguin.png'),
   L: require('./images/player.png'),
+  '#': require('./images/tile_wider.png'),
   '': '',
 };
 
@@ -117,8 +118,8 @@ const mazeStyles = StyleSheet.create({
   actor: {
     alignContent: 'center',
     alignItems: 'center',
-    width: CELL_SIZE / 1.2,
-    height: CELL_SIZE / 1.2,
+    width: CELL_SIZE,
+    height: CELL_SIZE,
   },
 });
 
