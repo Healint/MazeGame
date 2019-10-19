@@ -1,4 +1,5 @@
-import {Actor, get_random_from_list} from './Actors';
+import {Actor} from './Actors';
+import {get_random_from_list, get_random_number} from '../Lib/lib';
 
 export function LootFactory() {
   const items = ['MEDKIT', 'LOSTCAT', 'SUPERMEDKIT'];
@@ -23,7 +24,7 @@ class Medkit extends Actor {
   }
 
   process_interaction(player) {
-    let hp_delta = this.get_random_number(10) + 5;
+    let hp_delta = get_random_number(10) + 5;
     player.add_message(
       'You found a medkit, great ! You gain ' + hp_delta + 'hit points',
     );
@@ -40,7 +41,7 @@ class LostCat extends Actor {
   }
 
   process_interaction(player) {
-    let turn_gain = this.get_random_number(3) + 3;
+    let turn_gain = get_random_number(3) + 3;
     player.add_message(
       'A cat, lost in the middle of daemons! Hmmm, delicious ! This unexpected food lets you play ' +
         turn_gain +

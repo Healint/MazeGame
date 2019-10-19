@@ -1,4 +1,4 @@
-import {Cell, Maze} from './Maze';
+import {Maze} from './Maze/Maze';
 import {Player} from './Actors/Actors';
 
 export class WorldState {
@@ -6,18 +6,18 @@ export class WorldState {
   player: Player = null;
 
   constructor(rows, columns) {
-    this.maze = new Maze(rows, columns);
     this.player = new Player();
-    let base_cell = this.maze.get_cell(0, 0);
-    base_cell.character = this.player;
-    this.player.cell = base_cell;
+    this.maze = new Maze(rows, columns, this.player);
+    // let base_cell = this.maze.get_cell(0, 0);
+    // base_cell.character = this.player;
+    // this.player.cell = base_cell;
   }
 
   as_dict() {
     // return the game state as a dict
     return {
       maze: this.maze,
-      player: this.player.as_dict,
+      player: this.player.as_dict(),
     };
   }
 
@@ -29,7 +29,7 @@ export class WorldState {
     }
     this.player.turns += 1;
 
-    return this.state;
+    return this.as_dict();
   }
 
   _move_player(action: string) {
@@ -66,7 +66,7 @@ export class WorldState {
       return false;
     }
 
-    if (destination_cell.floor !== 0) {
+    if (destination_cell.floor === 0) {
       this.player.add_message('Unable to move, trying to move to a wall');
       return false;
     }
