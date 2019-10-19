@@ -1,30 +1,28 @@
 import {MazeBuilder} from './Maze';
 import {WorldState} from '../MazeBackend/GameWorld';
 
-const GRID_SIZE = 25;
+const GRID_HEIGHT = 19;
+const GRID_WIDTH = 19;
 
 export class MazeActionProcessor {
   positionx = 0;
   positiony = 0;
-  maxwidth = GRID_SIZE;
-  maxheight = GRID_SIZE;
   maze = this.sampleMaze();
   _worldState;
 
   constructor(positionx: number, positiony: number) {
     this.positionx = positionx;
     this.positiony = positiony;
-    this.initializeWorld(this.maxwidth, this.maxheight);
+    this.initializeWorld(GRID_HEIGHT, GRID_WIDTH);
   }
 
   worldToVisibleMaze(world: WorldState) {
     var i;
     var j;
     var rows = [];
-    let size = GRID_SIZE;
-    for (i = 0; i < size; i++) {
+    for (i = 0; i < GRID_HEIGHT; i++) {
       let cols = [];
-      for (j = 0; j < size; j++) {
+      for (j = 0; j < GRID_WIDTH - 10; j++) {
         let ch = this.getCharFromWorld(world, i, j);
         cols.push(ch);
       }
@@ -37,15 +35,16 @@ export class MazeActionProcessor {
     let cell = world.maze._map[i][j];
     let actor = cell.actor;
     let character = cell.character;
-    let floor = cell.floor === 0 ? '.' : '#';
+    let floor = cell.floor === 0 ? '' : '#';
     let pChar =
       character === undefined || character === null ? floor : character.char;
     let ch = actor === undefined || actor === null ? pChar : actor.char;
+
     return ch;
   }
 
   sampleMaze() {
-    var world = new WorldState(25, 25);
+    var world = new WorldState(GRID_HEIGHT, GRID_WIDTH);
     return this.worldToVisibleMaze(world);
   }
 
@@ -66,8 +65,8 @@ export class MazeActionProcessor {
     return new MazeBuilder(rows).build();
   }
 
-  initializeWorld(width: number, height: number) {
-    this._worldState = new WorldState(width, height);
+  initializeWorld(height: number, width: number) {
+    this._worldState = new WorldState(height, width);
   }
 
   currentMaze() {
@@ -84,7 +83,7 @@ export class MazeActionProcessor {
 
   moveDown() {
     console.log('Move down received');
-    if (this.positiony < this.maxheight) {
+    if (this.positiony < GRID_HEIGHT) {
       this.positiony++;
       this.submitMove('DOWN');
     }
@@ -98,7 +97,7 @@ export class MazeActionProcessor {
   }
   moveRight() {
     console.log('Move right received');
-    if (this.positionx < this.maxwidth) {
+    if (this.positionx < GRID_WIDTH) {
       this.positionx++;
       this.submitMove('RIGHT');
     }

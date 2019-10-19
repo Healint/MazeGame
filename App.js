@@ -5,16 +5,42 @@ import {
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
+  ImageBackground,
+  Image,
+  StatusBar,
 } from 'react-native';
 import {Maze, GridRow, GridCell, MazeBuilder} from './MazeCommunication/Maze';
 import {MazeActionProcessor} from './MazeCommunication/MazeActionProcessor';
 
+const ASSET_MAP = {
+  '@': require('./images/koala.png'),
+  H: require('./images/penguin.png'),
+  L: require('./images/player.png'),
+  '': '',
+};
+
 const MOVE_FREQ_MILLI = 50;
 
 function Item({cell}) {
+  let sourceImage = ASSET_MAP[cell.item];
+
   return (
     <View style={mazeStyles.item}>
-      <Text style={mazeStyles.title}>{cell.item}</Text>
+      {/*<Image*/}
+      {/*  source={require('./images/tile_wider.png')}*/}
+      {/*  style={{*/}
+      {/*    width: CELL_SIZE,*/}
+      {/*    height: CELL_SIZE,*/}
+      {/*    position: 'absolute',*/}
+      {/*    justifyContent: 'center',*/}
+      {/*  }}*/}
+      {/*/>*/}
+      {/*<Text style={mazeStyles.title}>{ASSET_MAP[cell.item]}</Text>*/}
+      {sourceImage === '' ? (
+        <Text style={mazeStyles.title} />
+      ) : (
+        <Image style={mazeStyles.actor} source={sourceImage} />
+      )}
     </View>
   );
 }
@@ -40,15 +66,15 @@ function DrawRows({items}) {
 }
 
 const BUTTON_HEIGHT = 50;
-const CELL_SIZE = 15;
+const CELL_SIZE = 30;
 
 const mazeStyles = StyleSheet.create({
   mainContainer: {
-    margin: 20,
+    marginTop: 20,
     justifyContent: 'center',
   },
   verticalContainer: {
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     flexDirection: 'column',
   },
   horizontalContainer: {
@@ -60,6 +86,7 @@ const mazeStyles = StyleSheet.create({
     margin: 2,
   },
   buttonUp: {
+    marginTop: 10,
     height: BUTTON_HEIGHT,
     justifyContent: 'center',
     flexDirection: 'row',
@@ -71,8 +98,9 @@ const mazeStyles = StyleSheet.create({
   },
   item: {
     backgroundColor: '#f9c2ff00',
-    padding: 0,
-    height: CELL_SIZE,
+    paddingTop: 5,
+    paddingStart: 7,
+    height: CELL_SIZE - 1,
     width: CELL_SIZE,
     marginVertical: 0,
     marginHorizontal: 0,
@@ -80,7 +108,17 @@ const mazeStyles = StyleSheet.create({
   title: {
     alignContent: 'center',
     alignItems: 'center',
+    color: 'white',
+    top: 2,
     fontSize: 10,
+    width: CELL_SIZE / 2,
+    height: CELL_SIZE / 2,
+  },
+  actor: {
+    alignContent: 'center',
+    alignItems: 'center',
+    width: CELL_SIZE / 1.2,
+    height: CELL_SIZE / 1.2,
   },
 });
 
@@ -106,54 +144,70 @@ export default class HelloWorldApp extends Component {
         'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
     };
     return (
-      <View style={mazeStyles.mainContainer}>
-        <View style={mazeStyles.verticalContainer}>
-          <DrawRows items={this._maze.rows} />
-        </View>
+      <ImageBackground
+        source={require('./images/plane_background.jpg')}
+        style={{width: '100%', height: '100%'}}>
+        <StatusBar hidden={true} />
+        <View style={mazeStyles.mainContainer}>
+          <View style={mazeStyles.verticalContainer}>
+            {/*<Image*/}
+            {/*  source={require('./images/tiled_background.jpg')}*/}
+            {/*  style={{*/}
+            {/*    marginLeft: 45,*/}
+            {/*    marginTop: -5,*/}
+            {/*    width: 300,*/}
+            {/*    height: 300,*/}
+            {/*    position: 'absolute',*/}
+            {/*    justifyContent: 'center',*/}
+            {/*  }}*/}
+            {/*/>*/}
+            <DrawRows items={this._maze.rows} />
+          </View>
 
-        <View style={mazeStyles.buttonUp}>
-          <TouchableWithoutFeedback
-            onPressIn={() => {
-              this.upIsDown = true;
-            }}
-            onPressOut={() => {
-              this.upIsDown = false;
-            }}>
-            <Text style={mazeStyles.buttonBackground}>MOVE UP</Text>
-          </TouchableWithoutFeedback>
-        </View>
+          <View style={mazeStyles.buttonUp}>
+            <TouchableWithoutFeedback
+              onPressIn={() => {
+                this.upIsDown = true;
+              }}
+              onPressOut={() => {
+                this.upIsDown = false;
+              }}>
+              <Text style={mazeStyles.buttonBackground}>MOVE UP</Text>
+            </TouchableWithoutFeedback>
+          </View>
 
-        <View style={mazeStyles.buttonSecondRow}>
-          <TouchableWithoutFeedback
-            onPressIn={() => {
-              this.leftIsDown = true;
-            }}
-            onPressOut={() => {
-              this.leftIsDown = false;
-            }}>
-            <Text style={mazeStyles.buttonBackground}>MOVE LEFT</Text>
-          </TouchableWithoutFeedback>
+          <View style={mazeStyles.buttonSecondRow}>
+            <TouchableWithoutFeedback
+              onPressIn={() => {
+                this.leftIsDown = true;
+              }}
+              onPressOut={() => {
+                this.leftIsDown = false;
+              }}>
+              <Text style={mazeStyles.buttonBackground}>MOVE LEFT</Text>
+            </TouchableWithoutFeedback>
 
-          <TouchableWithoutFeedback
-            onPressIn={() => {
-              this.downIsDown = true;
-            }}
-            onPressOut={() => {
-              this.downIsDown = false;
-            }}>
-            <Text style={mazeStyles.buttonBackground}>MOVE DOWN</Text>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            onPressIn={() => {
-              this.rightIsDown = true;
-            }}
-            onPressOut={() => {
-              this.rightIsDown = false;
-            }}>
-            <Text style={mazeStyles.buttonBackground}>MOVE RIGHT</Text>
-          </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPressIn={() => {
+                this.downIsDown = true;
+              }}
+              onPressOut={() => {
+                this.downIsDown = false;
+              }}>
+              <Text style={mazeStyles.buttonBackground}>MOVE DOWN</Text>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPressIn={() => {
+                this.rightIsDown = true;
+              }}
+              onPressOut={() => {
+                this.rightIsDown = false;
+              }}>
+              <Text style={mazeStyles.buttonBackground}>MOVE RIGHT</Text>
+            </TouchableWithoutFeedback>
+          </View>
         </View>
-      </View>
+      </ImageBackground>
     );
   }
 
