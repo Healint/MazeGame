@@ -1,53 +1,61 @@
+import {MazeBuilder} from './Maze';
+
 export class MazeActionProcessor {
-  name;
-  title;
-  id;
+  positionx = 0;
+  positiony = 0;
+  maxwidth = 19;
+  maxheight = 19;
 
-  constructor(name, title, id) {
-    this._name = name;
-    this._title = title;
-    this._id = id;
+  constructor(positionx: number, positiony: number) {
+    this.positionx = positionx;
+    this.positiony = positiony;
   }
 
-  get name() {
-    return this._name;
+  sampleMaze() {
+    var i;
+    var j;
+    var rows = [];
+    let size = 25;
+    for (i = 0; i < size; i++) {
+      let cols = [];
+      for (j = 0; j < size; j++) {
+        // cols.push('' + (i * size + j));
+        let ch = j === this.positionx && i === this.positiony ? '#' : '.';
+        cols.push(ch);
+      }
+      rows.push(cols);
+    }
+    let maze = new MazeBuilder(rows).build();
+    return maze;
   }
 
-  set name(value) {
-    this._name = value;
-  }
-
-  get title() {
-    return this._title;
-  }
-
-  set title(value) {
-    this._title = value;
-  }
-
-  get id() {
-    return this._id;
-  }
-
-  set id(value) {
-    this._id = value;
-  }
-
-  startMaze() {
-    console.log('Start maze action received');
+  currentMaze() {
+    return this.sampleMaze();
   }
 
   moveUp() {
     console.log('Move up receivedd');
+    if (this.positiony > 0) {
+      this.positiony--;
+    }
   }
 
   moveDown() {
     console.log('Move down received');
+    if (this.positiony < this.maxheight) {
+      this.positiony++;
+    }
   }
   moveLeft() {
     console.log('Move left received');
+    if (this.positionx > 0) {
+      this.positionx--;
+    }
   }
   moveRight() {
     console.log('Move right received');
+    if (this.positionx < this.maxwidth) {
+      this.positionx++;
+    }
   }
 }
