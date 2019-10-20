@@ -5,6 +5,12 @@ export class Actor {
   max_view_distance: number = 99; // how far can this hurdle be seen. 0 means invisible, 99 always visible
   visible: boolean = false;
 
+  toString() {
+    return `Actor(char=${this.char},visible=${this.visible},max_view_distance=${
+      this.max_view_distance
+    })`;
+  }
+
   constructor(cell) {
     this.cell = cell;
   }
@@ -22,6 +28,7 @@ export class MazeExit extends Actor {
   constructor(cell) {
     super(cell);
     this.char = 'E';
+    this.max_view_distance = 4;
   }
 
   process_interaction(player) {

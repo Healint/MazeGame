@@ -272,15 +272,18 @@ export class Maze {
   }
 
   display_log() {
+    console.log('Displaying the maze');
     for (let x = 0; x < this.nb_rows; x++) {
       let row = [];
       for (let y = 0; y < this.nb_columns; y++) {
         let cell = this.get_cell(x, y);
-        if (cell.actor !== undefined) {
+        if (cell.actor && cell.actor.visible === true) {
           row.push(cell.actor.char);
           // row.push(cell.floor);
+        } else if (cell.floor.visible === true) {
+          row.push(cell.floor.char);
         } else {
-          row.push(cell.floor);
+          row.push('-');
         }
       }
       console.log(row);
@@ -296,11 +299,13 @@ export class Maze {
         // swap actor visibility
         if (cell.actor) {
           distance = cell.get_distance_to_other_cell(player.cell);
-          if (cell.actor.max_view_distance < distance) {
+          // console.log(`distance is ${distance} for cell ${cell}`)
+          if (distance < cell.actor.max_view_distance) {
             cell.actor.visible = true;
           } else {
             cell.actor.visible = false;
           }
+          // console.log(`${cell}`)
         }
         // check floor visibility
         if (cell.floor.visible === false) {

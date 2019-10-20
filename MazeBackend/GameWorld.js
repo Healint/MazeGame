@@ -34,6 +34,7 @@ export class WorldState {
     this.end_of_turn_maintenance();
     let ret = this.as_dict();
     console.timeEnd('Backend Submit Action');
+    this.maze.display_log();
     return ret;
   }
 
@@ -106,8 +107,8 @@ export class WorldState {
     console.log('Destination:' + destination_cell);
     // # delete player
     // # draw it in new place
-    destination_cell.character = this.player;
-    current_cell.character = null;
+    destination_cell.actor = this.player;
+    current_cell.actor = null;
     this.player.cell = destination_cell;
     this.player.add_message('Movement successful');
     return true;
