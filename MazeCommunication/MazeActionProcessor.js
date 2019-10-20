@@ -1,7 +1,7 @@
 import {MazeBuilder} from './Maze';
 import {WorldState} from '../MazeBackend/GameWorld';
 
-const GRID_HEIGHT = 19;
+const GRID_HEIGHT = 9;
 const GRID_WIDTH = 9;
 
 export class MazeActionProcessor {
@@ -22,6 +22,7 @@ export class MazeActionProcessor {
     var rows = [];
     for (i = 0; i < GRID_HEIGHT; i++) {
       let cols = [];
+      //todo zeeshan remove this when bug is fixed
       for (j = 0; j < GRID_WIDTH; j++) {
         let ch = this.getCharFromWorld(world, i, j);
         cols.push(ch);
@@ -96,7 +97,7 @@ export class MazeActionProcessor {
 
   submitMove(move) {
     var playerMoved = this._worldState.submit_player_action(move);
-    console.log(playerMoved);
+    console.log('sending move: ' + move);
     this.maze = playerMoved
       ? this.worldToVisibleMaze(this._worldState)
       : this.maze;
