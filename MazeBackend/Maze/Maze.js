@@ -57,6 +57,7 @@ export class Maze {
         if (cell.floor === 7) {
           cell.floor = 0;
         }
+        cell.roll_actor();
       }
     }
   }
@@ -270,8 +271,8 @@ export class Maze {
       for (let y = 0; y < this._nb_columns; y++) {
         let cell = this.get_cell(x, y);
         if (cell.actor !== undefined) {
-          // row.push(cell.actor.char);
-          row.push(cell.floor);
+          row.push(cell.actor.char);
+          // row.push(cell.floor);
         } else {
           row.push(cell.floor);
         }
