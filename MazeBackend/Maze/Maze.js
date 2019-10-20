@@ -5,24 +5,26 @@ import {Room} from './Room';
 import {UNIVERSE_CONSTANTS} from '../Constants';
 
 export class Maze {
-  _nb_columns = null;
-  _nb_rows = null;
+  nb_columns = null;
+  nb_rows = null;
   _map;
   rooms: Array;
 
-  constructor(nb_columns, nb_rows, player) {
-    this._nb_columns = nb_columns;
-    this._nb_rows = nb_rows;
+  constructor(nb_rows, nb_columns, player) {
+    this.nb_rows = nb_rows;
+    this.nb_columns = nb_columns;
     this._map = this.create_base();
     console.log('Maze Base done');
     let success = this.carve_dungeon();
     console.log('Dungeon Carving Result: ' + success);
-    this.place_player_and_exit(player);
     this.cleanup();
+    this.place_player_and_exit(player);
+    console.log(this.toString());
+    this.display_log();
   }
 
   toString() {
-    return `Maze(_nb_columns=${this._nb_columns},_nb_rows=${this._nb_rows})`;
+    return `Maze(nb_columns=${this.nb_columns},nb_rows=${this.nb_rows})`;
   }
 
   place_player_and_exit(player) {
@@ -51,8 +53,8 @@ export class Maze {
   cleanup() {
     // any cleanup post maze construction
     // right now, it's changing uncarveable back to standard walls
-    for (let x = 0; x < this._nb_rows; x++) {
-      for (let y = 0; y < this._nb_columns; y++) {
+    for (let x = 0; x < this.nb_rows; x++) {
+      for (let y = 0; y < this.nb_columns; y++) {
         let cell = this.get_cell(x, y);
         if (cell.floor === 7) {
           cell.floor = 0;
@@ -74,11 +76,11 @@ export class Maze {
     // returns true if the room is successfully carved, else false
     let row_coord = get_random_number_range(
       0,
-      Math.max(0, this._nb_rows - new_room.height),
+      Math.max(0, this.nb_rows - new_room.height),
     );
     let col_coord = get_random_number_range(
       0,
-      Math.max(0, this._nb_columns - new_room.width),
+      Math.max(0, this.nb_columns - new_room.width),
     );
 
     // first we check if we can carve the room
@@ -236,11 +238,11 @@ export class Maze {
   }
 
   create_base() {
-    let maze = new Array(this._nb_rows);
+    let maze = new Array(this.nb_rows);
 
     // creating empty array
     for (let i = 0; i < maze.length; i++) {
-      maze[i] = new Array(this._nb_columns);
+      maze[i] = new Array(this.nb_columns);
     }
 
     // adding cells
@@ -255,7 +257,7 @@ export class Maze {
   }
 
   get_cell(x, y) {
-    if (x < 0 || y < 0 || x >= this._nb_rows || y >= this._nb_columns) {
+    if (x < 0 || y < 0 || x >= this.nb_rows || y >= this.nb_columns) {
       throw 'going beyond map boundaries';
     }
     return this._map[x][y];
@@ -266,9 +268,9 @@ export class Maze {
   }
 
   display_log() {
-    for (let x = 0; x < this._nb_rows; x++) {
+    for (let x = 0; x < this.nb_rows; x++) {
       let row = [];
-      for (let y = 0; y < this._nb_columns; y++) {
+      for (let y = 0; y < this.nb_columns; y++) {
         let cell = this.get_cell(x, y);
         if (cell.actor !== undefined) {
           row.push(cell.actor.char);

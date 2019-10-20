@@ -45,7 +45,7 @@ export class WorldState {
     // returns true if character moves
     // # check destination
     let move_x, move_y;
-    console.log(`move ${action} recevied by backend`);
+    console.log(`move ${action} received by backend`);
 
     if (action === 'LEFT') {
       move_x = 0;
