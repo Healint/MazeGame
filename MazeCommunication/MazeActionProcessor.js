@@ -2,7 +2,7 @@ import {MazeBuilder} from './Maze';
 import {WorldState} from '../MazeBackend/GameWorld';
 
 const GRID_HEIGHT = 19;
-const GRID_WIDTH = 19;
+const GRID_WIDTH = 9;
 
 export class MazeActionProcessor {
   positionx = 0;
@@ -22,7 +22,7 @@ export class MazeActionProcessor {
     var rows = [];
     for (i = 0; i < GRID_HEIGHT; i++) {
       let cols = [];
-      for (j = 0; j < GRID_WIDTH - 10; j++) {
+      for (j = 0; j < GRID_WIDTH; j++) {
         let ch = this.getCharFromWorld(world, i, j);
         cols.push(ch);
       }
@@ -43,13 +43,13 @@ export class MazeActionProcessor {
     return ch;
   }
 
+  //todo zeeshan remove this
   sampleMaze() {
     // var world = new WorldState(GRID_HEIGHT, GRID_WIDTH);
     // return this.worldToVisibleMaze(world);
     return this.sampleMaze_old();
   }
 
-  //todo zeeshan remove this
   sampleMaze_old() {
     var i;
     var j;
@@ -78,32 +78,20 @@ export class MazeActionProcessor {
 
   moveUp() {
     console.log('Move up received');
-    if (this.positiony > 0) {
-      this.positiony--;
-      this.submitMove('UP');
-    }
+    this.submitMove('UP');
   }
 
   moveDown() {
     console.log('Move down received');
-    if (this.positiony < GRID_HEIGHT) {
-      this.positiony++;
-      this.submitMove('DOWN');
-    }
+    this.submitMove('DOWN');
   }
   moveLeft() {
     console.log('Move left received');
-    if (this.positionx > 0) {
-      this.positionx--;
-      this.submitMove('LEFT');
-    }
+    this.submitMove('LEFT');
   }
   moveRight() {
     console.log('Move right received');
-    if (this.positionx < GRID_WIDTH) {
-      this.positionx++;
-      this.submitMove('RIGHT');
-    }
+    this.submitMove('RIGHT');
   }
 
   submitMove(move) {
