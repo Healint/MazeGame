@@ -5,6 +5,17 @@ import {Room} from './Room';
 import {Floor} from './Floor';
 import {UNIVERSE_CONSTANTS, FLOOR_TYPES} from '../Constants';
 
+function mark_all_neighbours(cell, maze) {
+  // recursive function to follow all neighbours of a cell
+  let neighbours = cell.get_cardinal_neighbours(maze);
+  neighbours.forEach(function(cell) {
+    if (cell.floor.char !== FLOOR_TYPES.WALL && cell.marked === undefined) {
+      cell.marked = true;
+      mark_all_neighbours(cell, maze);
+    }
+  });
+}
+
 export class Maze {
   nb_columns = null;
   nb_rows = null;
@@ -14,15 +25,31 @@ export class Maze {
   constructor(nb_rows, nb_columns, player) {
     this.nb_rows = nb_rows;
     this.nb_columns = nb_columns;
-    this._map = this.create_base();
-    console.log('Maze Base done');
-    let success = this.carve_dungeon();
-    console.log('Dungeon Carving Result: ' + success);
+
+    // we generate dungeons until a valid one is generated
+    while (true) {
+      let success = this.create_dungeon(player);
+      if (success === true) {
+        break;
+      }
+    }
+
     this.cleanup();
-    this.place_player_and_exit(player);
     this.update_maze_visibility(player);
     console.log(this.toString());
     this.display_log();
+  }
+
+  create_dungeon(player) {
+    // creates a dungeon. returns true if the player can reach the exit
+    this._map = this.create_base();
+    console.log('Maze Base done');
+    this.rooms = this.carve_dungeon(player);
+    console.log(`${this.rooms.length} rooms carved`);
+    this.exit_cell = this.place_player_and_exit(player);
+    let success = this.connect_all_rooms(player);
+    console.log('Dungeon Carving Result: ' + success);
+    return success;
   }
 
   toString() {
@@ -50,11 +77,12 @@ export class Maze {
     let last_room = this.rooms[this.rooms.length - 1];
     let exit_cell = this.get_cell(last_room.x, last_room.y);
     exit_cell.actor = new MazeExit();
+    return exit_cell;
   }
 
   cleanup() {
     // any cleanup post maze construction
-    // right now, it's changing uncarveable back to standard walls
+    // right now, it's rolling for actors
     for (let x = 0; x < this.nb_rows; x++) {
       for (let y = 0; y < this.nb_columns; y++) {
         let cell = this.get_cell(x, y);
@@ -187,9 +215,20 @@ export class Maze {
     }
     return false;
   }
-  carve_dungeon() {
+
+  can_player_reach_exit(cell) {
+    // returns true if the player can reach the exit
+    mark_all_neighbours(cell, this);
+    let retval = false;
+    if (this.exit_cell.marked === true) {
+      retval = true;
+    }
+    return retval;
+  }
+
+  carve_dungeon(player) {
     // carves the dungeon
-    // returns true if a valid dungeon is generated, else false
+    // returns the rooms
 
     // generate random room
     let rooms = [];
@@ -205,27 +244,29 @@ export class Maze {
         rooms.push(new_room);
       }
     }
-    this.rooms = rooms;
-    console.log(`${this.rooms.length} rooms carved`);
+    return rooms;
+  }
 
+  connect_all_rooms(player) {
+    // returns true if a valid dungeon is generated, else false
     // carve corridors until all rooms are connected
     let not_all_connected = true;
     let iterations = 0;
     while (not_all_connected === true) {
       // process one room
       let nb_connections = 0;
-      for (let i = 0; i < rooms.length; i++) {
-        if (rooms[i].has_corridor === true) {
+      for (let i = 0; i < this.rooms.length; i++) {
+        if (this.rooms[i].has_corridor === true) {
           nb_connections += 1;
         } else {
-          let result = this.carve_corridor(rooms[i]);
+          let result = this.carve_corridor(this.rooms[i]);
           if (result === true) {
-            rooms[i].has_corridor = true;
+            this.rooms[i].has_corridor = true;
           }
         }
       }
       // if all rooms are connected, break
-      if (nb_connections === rooms.length) {
+      if (nb_connections === this.rooms.length) {
         not_all_connected = false;
       }
       // if too many iterations, we probably have an invalid dungeon, break and return false
@@ -237,6 +278,9 @@ export class Maze {
       iterations += 1;
     }
 
+    if (this.can_player_reach_exit(player.cell) === false) {
+      return false;
+    }
     return true;
   }
 
@@ -279,13 +323,14 @@ export class Maze {
         let cell = this.get_cell(x, y);
         // if (cell.actor && cell.actor.visible === true) {
         if (cell.actor) {
-          row.push(cell.actor.char);
+          // row.push(cell.actor.char);
           // row.push(cell.floor);
+          row.push(0);
           // } else if (cell.floor.visible === true) {
-        } else if (cell) {
+        } else if (cell.marked === true) {
           row.push(cell.floor.char);
         } else {
-          row.push('-');
+          row.push(0);
         }
       }
       console.log(row);
@@ -310,7 +355,7 @@ export class Maze {
           // console.log(`${cell}`)
         }
         // debug
-        cell.floor.visible = true;
+        // cell.floor.visible = true;
         // check floor visibility
         if (cell.floor.visible === false) {
           // once visible, floors can't be hidden, so we just have to check this case
