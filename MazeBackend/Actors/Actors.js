@@ -32,8 +32,8 @@ export class MazeExit extends Actor {
   }
 
   process_interaction(player) {
-    player.add_message('You have won');
-    player.game_state = GAME_STATES.WON;
+    player.add_message('You have found the exit !');
+    player.game_state = GAME_STATES.EXIT;
     return false;
   }
 }
@@ -51,6 +51,8 @@ export class Player extends Actor {
     this.game_state = GAME_STATES.PLAYING;
     this.view_distance = 5;
     this.visible = true;
+    this.level = 1;
+    this.score = 0;
   }
 
   as_dict() {
@@ -60,6 +62,8 @@ export class Player extends Actor {
       actions: this.actions,
       game_state: this.game_state,
       food: this.food,
+      score: this.score,
+      level: this.level,
     };
   }
 

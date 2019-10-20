@@ -277,10 +277,12 @@ export class Maze {
       let row = [];
       for (let y = 0; y < this.nb_columns; y++) {
         let cell = this.get_cell(x, y);
-        if (cell.actor && cell.actor.visible === true) {
+        // if (cell.actor && cell.actor.visible === true) {
+        if (cell.actor) {
           row.push(cell.actor.char);
           // row.push(cell.floor);
-        } else if (cell.floor.visible === true) {
+          // } else if (cell.floor.visible === true) {
+        } else if (cell) {
           row.push(cell.floor.char);
         } else {
           row.push('-');
@@ -307,6 +309,8 @@ export class Maze {
           }
           // console.log(`${cell}`)
         }
+        // debug
+        cell.floor.visible = true;
         // check floor visibility
         if (cell.floor.visible === false) {
           // once visible, floors can't be hidden, so we just have to check this case

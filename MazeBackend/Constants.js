@@ -6,6 +6,7 @@ export const UNIVERSE_CONSTANTS = {
 };
 
 export const GAME_STATES = {
+  EXIT: 'EXIT',
   WON: 'WON',
   DEAD: 'DEAD',
   PLAYING: 'PLAYING',
@@ -16,3 +17,5 @@ export const FLOOR_TYPES = {
   ROOM: 1,
   CORRIDOR: 2,
 };
+
+export const VICTORY_LEVEL = 2;
