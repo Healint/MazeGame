@@ -1,8 +1,25 @@
 export class MazeBuilder {
   data: Array<Array<String>>;
+  _maze;
 
   constructor(data: Array<Array<Element>>) {
     this.data = data;
+    this._maze = new Maze('Amazing Maze', null);
+  }
+
+  withTurn(turn: number) {
+    this._maze.turn = turn;
+    return this;
+  }
+
+  withMessage(message: String) {
+    this._maze.message = message;
+    return this;
+  }
+
+  withPlayerLife(playerLife: number) {
+    this._maze.playerLife = playerLife;
+    return this;
   }
 
   build() {
@@ -14,15 +31,16 @@ export class MazeBuilder {
         gridRow.items.push(new GridCell(idx, item));
       });
     });
-    return new Maze('Awesome maze', gridRows);
+    this._maze.rows = gridRows;
+    return this._maze;
   }
 }
 
 export class Maze {
   name: String;
-  turn;
-  message;
-  playerLife;
+  turn: number;
+  message: String;
+  playerLife: number;
   rows: Array<GridRow>;
 
   constructor(name: String, rows: Array<GridRow>) {
