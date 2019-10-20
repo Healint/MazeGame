@@ -42,7 +42,7 @@ export class MazeActionProcessor {
     if (character) {
       ch = character.char;
     } else if (actor) {
-      ch = actor.visible ? actor.char : 'IN';
+      ch = actor.visible ? actor.char : '';
     }
     if (floor) {
       fl = floor.visible ? floor.char : 'IN';

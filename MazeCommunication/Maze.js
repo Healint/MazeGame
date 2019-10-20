@@ -20,6 +20,9 @@ export class MazeBuilder {
 
 export class Maze {
   name: String;
+  turn;
+  message;
+  playerLife;
   rows: Array<GridRow>;
 
   constructor(name: String, rows: Array<GridRow>) {
