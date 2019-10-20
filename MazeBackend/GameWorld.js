@@ -36,14 +36,15 @@ export class WorldState {
     this.end_of_turn_maintenance();
     let ret = this.as_dict();
     console.timeEnd('Backend Submit Action');
-    this.maze.display_log();
+    // this.maze.display_log();
     return ret;
   }
 
   end_of_turn_maintenance() {
     this.player.turns += 1;
     this.player.change_food(-1);
-    this.maze.update_maze_visibility(this.player);
+    // this.maze.update_maze_visibility(this.player);
+    this.maze.update_maze_visibility_blocking(this.player);
 
     // checks for victory
     if (this.player.game_state === GAME_STATES.EXIT) {

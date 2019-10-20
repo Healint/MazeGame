@@ -4,6 +4,8 @@ import {Cell} from './Cell';
 import {Room} from './Room';
 import {Floor} from './Floor';
 import {UNIVERSE_CONSTANTS, FLOOR_TYPES} from '../Constants';
+import {get_cells_along_line} from '../Lib/geometry';
+import 'react-native-console-time-polyfill';
 
 function mark_all_neighbours(cell, maze) {
   // recursive function to follow all neighbours of a cell
@@ -35,7 +37,8 @@ export class Maze {
     }
 
     this.cleanup();
-    this.update_maze_visibility(player);
+    // this.update_maze_visibility(player);
+    this.update_maze_visibility_blocking(player);
     console.log(this.toString());
     this.display_log();
   }
@@ -335,6 +338,66 @@ export class Maze {
       }
       console.log(row);
     }
+  }
+
+  update_maze_visibility_blocking(player) {
+    console.time('Visibility check');
+    // 4 corners around the player
+    let p1 = this.get_cell(
+      Math.max(player.cell.x - player.view_distance, 0),
+      Math.min(player.cell.y + player.view_distance, this.nb_columns - 1),
+    );
+    let p2 = this.get_cell(
+      Math.min(player.cell.x + player.view_distance, this.nb_rows - 1),
+      Math.min(player.cell.y + player.view_distance, this.nb_columns - 1),
+    );
+    let p3 = this.get_cell(
+      Math.min(player.cell.x + player.view_distance, this.nb_rows - 1),
+      Math.max(player.cell.y - player.view_distance, 0),
+    );
+    let p4 = this.get_cell(
+      Math.max(player.cell.x - player.view_distance, 0),
+      Math.max(player.cell.y - player.view_distance, 0),
+    );
+    let list_destinations = [
+      ...get_cells_along_line(p1, p2, this),
+      ...get_cells_along_line(p3, p2, this),
+      ...get_cells_along_line(p4, p3, this),
+      ...get_cells_along_line(p4, p1, this),
+    ];
+    let unique_destinations = [...new Set(list_destinations)];
+
+    // for each destination, trace a line from the player
+    // all cells will be visible until a wall is hit
+    for (let h = 0; h < unique_destinations.length; h++) {
+      let destination_cell = unique_destinations[h];
+      // console.log(destination_cell)
+      let line = get_cells_along_line(player.cell, destination_cell, this);
+
+      for (let i = 0; i < line.length; i++) {
+        let cell = line[i];
+        let distance = cell.get_distance_to_other_cell(player.cell);
+        if (distance > player.view_distance) {
+          break;
+        } else if (cell.floor.char === FLOOR_TYPES.WALL) {
+          cell.floor.visible = true;
+          break;
+        } else {
+          cell.floor.visible = true;
+        }
+
+        // now actors visibility
+        if (cell.actor) {
+          // console.log(`distance is ${distance} for cell ${cell}`)
+          if (distance < cell.actor.max_view_distance) {
+            cell.actor.visible = true;
+          } else {
+            cell.actor.visible = false;
+          }
+        }
+      }
+    }
+    console.timeEnd('Visibility check');
   }
 
   update_maze_visibility(player) {
