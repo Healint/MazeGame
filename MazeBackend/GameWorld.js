@@ -45,6 +45,7 @@ export class WorldState {
     // returns true if character moves
     // # check destination
     let move_x, move_y;
+    console.log(`move ${action} recevied by backend`);
 
     if (action === 'LEFT') {
       move_x = 0;
@@ -81,8 +82,11 @@ export class WorldState {
     }
 
     // checks for interactions with any hurdle
-    if (destination_cell.actor !== undefined) {
-      console.log(destination_cell.actor);
+    if (
+      destination_cell.actor !== undefined &&
+      destination_cell.actor !== null
+    ) {
+      console.log(`Destination actor is: ${destination_cell.actor}`);
       let persistent_hurdle = destination_cell.actor.process_interaction(
         this.player,
       );
