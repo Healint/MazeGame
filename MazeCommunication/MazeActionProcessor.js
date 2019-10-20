@@ -7,7 +7,7 @@ const GRID_WIDTH = 19;
 export class MazeActionProcessor {
   positionx = 0;
   positiony = 0;
-  maze = this.sampleMaze();
+  maze;
   _worldState;
 
   constructor(positionx: number, positiony: number) {
@@ -44,8 +44,9 @@ export class MazeActionProcessor {
   }
 
   sampleMaze() {
-    var world = new WorldState(GRID_HEIGHT, GRID_WIDTH);
-    return this.worldToVisibleMaze(world);
+    // var world = new WorldState(GRID_HEIGHT, GRID_WIDTH);
+    // return this.worldToVisibleMaze(world);
+    return this.sampleMaze_old();
   }
 
   //todo zeeshan remove this
@@ -53,7 +54,7 @@ export class MazeActionProcessor {
     var i;
     var j;
     var rows = [];
-    let size = 25;
+    let size = GRID_WIDTH;
     for (i = 0; i < size; i++) {
       let cols = [];
       for (j = 0; j < size; j++) {
@@ -67,6 +68,7 @@ export class MazeActionProcessor {
 
   initializeWorld(height: number, width: number) {
     this._worldState = new WorldState(height, width);
+    this.maze = this.worldToVisibleMaze(this._worldState);
     console.log('maze initialized');
   }
 
