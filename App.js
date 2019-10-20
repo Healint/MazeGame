@@ -36,12 +36,12 @@ function Item({cell}) {
       {/*    justifyContent: 'center',*/}
       {/*  }}*/}
       {/*/>*/}
-      {/*<Text style={mazeStyles.title}>{ASSET_MAP[cell.item]}</Text>*/}
-      {sourceImage === '' ? (
-        <Text style={mazeStyles.title} />
-      ) : (
-        <Image style={mazeStyles.actor} source={sourceImage} />
-      )}
+      <Text style={mazeStyles.title}>{cell.item}</Text>
+      {/*{sourceImage === '' ? (*/}
+      {/*  <Text style={mazeStyles.title}>{cell.item}</Text>*/}
+      {/*) : (*/}
+      {/*  <Image style={mazeStyles.actor} source={sourceImage} />*/}
+      {/*)}*/}
     </View>
   );
 }
@@ -85,6 +85,7 @@ const mazeStyles = StyleSheet.create({
   buttonBackground: {
     backgroundColor: '#f9c2ff',
     margin: 2,
+    color: 'white',
   },
   buttonUp: {
     marginTop: 10,
@@ -98,10 +99,10 @@ const mazeStyles = StyleSheet.create({
     flexDirection: 'row',
   },
   item: {
-    backgroundColor: '#f9c2ff00',
+    backgroundColor: '#000000',
     paddingTop: 5,
     paddingStart: 7,
-    height: CELL_SIZE - 1,
+    height: CELL_SIZE - 0,
     width: CELL_SIZE,
     marginVertical: 0,
     marginHorizontal: 0,

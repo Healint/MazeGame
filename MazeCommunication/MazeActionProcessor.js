@@ -35,7 +35,7 @@ export class MazeActionProcessor {
     let cell = world.maze._map[i][j];
     let actor = cell.actor;
     let character = cell.character;
-    let floor = cell.floor === 0 ? '' : '#';
+    var floor = cell.floor === 0 ? '' : '' + cell.floor;
     let pChar =
       character === undefined || character === null ? floor : character.char;
     let ch = actor === undefined || actor === null ? pChar : actor.char;
