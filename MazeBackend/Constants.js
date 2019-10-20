@@ -1,6 +1,6 @@
 export const UNIVERSE_CONSTANTS = {
-  hurdle_proba: 0.05,
-  loot_proba: 0.03,
+  hurdle_proba: 0.07,
+  loot_proba: 0.05,
   max_room_failures: 30, // max number of failures when trying to carve rooms. Higher means more rooms
   max_room_size: 3, // max size of a room
 };
@@ -18,4 +18,4 @@ export const FLOOR_TYPES = {
   CORRIDOR: 2,
 };
 
-export const VICTORY_LEVEL = 2;
+export const VICTORY_LEVEL = 3;
