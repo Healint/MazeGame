@@ -293,7 +293,7 @@ export class Maze {
         let cell = this.get_cell(x, y);
         let distance;
         // swap actor visibility
-        if (cell.actor !== undefined) {
+        if (cell.actor) {
           distance = cell.get_distance_to_other_cell(player.cell);
           if (cell.actor.max_view_distance < distance) {
             cell.actor.visible = true;

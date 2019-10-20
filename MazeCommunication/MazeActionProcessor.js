@@ -34,13 +34,19 @@ export class MazeActionProcessor {
 
   getCharFromWorld(world, i, j) {
     let cell = world.maze._map[i][j];
+    let floor = cell.floor;
     let actor = cell.actor;
     let character = cell.character;
-    var floor = cell.floor === 0 ? '' : '' + cell.floor;
-    let pChar =
-      character === undefined || character === null ? floor : character.char;
-    let ch = actor === undefined || actor === null ? pChar : actor.char;
-
+    var ch = '';
+    if (character) {
+      ch = character.char;
+    } else if (actor) {
+      ch = actor.visible ? actor.char : '';
+    } else if (floor) {
+      ch = floor.visible ? floor.char : '';
+    } else {
+      console.log('actor not known');
+    }
     return ch;
   }
 
