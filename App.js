@@ -1,147 +1,310 @@
 import React, {Component} from 'react';
-import {SafeAreaView, View, FlatList, StyleSheet, Text} from 'react-native';
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  ImageBackground,
+  Image,
+  StatusBar,
+} from 'react-native';
+import {Maze, GridRow, GridCell, MazeBuilder} from './MazeCommunication/Maze';
 import {MazeActionProcessor} from './MazeCommunication/MazeActionProcessor';
-import {WorldState} from './MazeBackend/GameWorld';
 
-const DATA1 = {
-  id: '1',
-  data: [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-  ],
+const ASSET_MAP = {
+  '@': require('./images/koala.png'),
+  H: require('./images/penguin.png'),
+  L: require('./images/player.png'),
+  '#': require('./images/tile_wider.png'),
+  '': '',
 };
 
-const DATA2 = {
-  id: '2',
-  data: [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-  ],
-};
+const MOVE_FREQ_MILLI = 50;
 
-const DATA3 = {
-  id: '3',
-  data: [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-  ],
-};
+function Item({cell}) {
+  let sourceImage = ASSET_MAP[cell.item];
 
-const DATA = [DATA1, DATA2, DATA3];
-
-function Item({title}) {
   return (
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
+    <View style={mazeStyles.item}>
+      {/*<Image*/}
+      {/*  source={require('./images/tile_wider.png')}*/}
+      {/*  style={{*/}
+      {/*    width: CELL_SIZE,*/}
+      {/*    height: CELL_SIZE,*/}
+      {/*    position: 'absolute',*/}
+      {/*    justifyContent: 'center',*/}
+      {/*  }}*/}
+      {/*/>*/}
+      <Text style={mazeStyles.title}>{cell.item}</Text>
+      {/*{sourceImage === '' ? (*/}
+      {/*  <Text style={mazeStyles.title}>{cell.item}</Text>*/}
+      {/*) : (*/}
+      {/*  <Image style={mazeStyles.actor} source={sourceImage} />*/}
+      {/*)}*/}
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+
+function DrawMazeCells({items}) {
+  return items.map((cell, idx, data) => {
+    return <Item cell={cell} key={cell.cellId} />;
+  });
+}
+
+function DrawRow({item}) {
+  return (
+    <View style={mazeStyles.horizontalContainer}>
+      <DrawMazeCells items={item.items} />
+    </View>
+  );
+}
+
+function DrawRows({items}) {
+  return items.map((row, idx, data) => {
+    return <DrawRow item={row} key={row.rowId} />;
+  });
+}
+
+const BUTTON_HEIGHT = 50;
+const CELL_SIZE = 30;
+
+const mazeStyles = StyleSheet.create({
+  mainContainer: {
+    marginTop: 20,
+    justifyContent: 'center',
+  },
+  verticalContainer: {
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
+  horizontalContainer: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  buttonBackground: {
+    backgroundColor: '#f9c2ff',
+    margin: 2,
+    color: 'white',
+  },
+  buttonUp: {
     marginTop: 10,
+    height: BUTTON_HEIGHT,
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  buttonSecondRow: {
+    height: BUTTON_HEIGHT,
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
   item: {
-    backgroundColor: '#f9c2ff',
-    padding: 1,
-    marginVertical: 1,
-    marginHorizontal: 1,
+    backgroundColor: '#000000',
+    paddingTop: 5,
+    paddingStart: 7,
+    height: CELL_SIZE - 0,
+    width: CELL_SIZE,
+    marginVertical: 0,
+    marginHorizontal: 0,
   },
   title: {
-    fontSize: 32,
+    alignContent: 'center',
+    alignItems: 'center',
+    color: 'white',
+    top: 2,
+    fontSize: 10,
+    width: CELL_SIZE / 2,
+    height: CELL_SIZE / 2,
+  },
+  actor: {
+    alignContent: 'center',
+    alignItems: 'center',
+    width: CELL_SIZE,
+    height: CELL_SIZE,
   },
 });
 
 export default class HelloWorldApp extends Component {
+  _maze;
+  rightIsDown = false;
+  leftIsDown = false;
+  upIsDown = false;
+  downIsDown = false;
+  timeWait = 0;
+
+  _mazeActionProcessor;
+
   render() {
+    if (!this._mazeActionProcessor) {
+      this._mazeActionProcessor = new MazeActionProcessor(0, 0);
+      this.registerMovements();
+    }
+    this._maze = this._mazeActionProcessor.currentMaze();
+
     let pic = {
       uri:
         'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
     };
-
-    let world = new WorldState(5, 5);
-    let state = null;
-    state = world.submit_player_action('DOWN');
-    console.log(world.player.actions);
-
-    let actionProcessor = new MazeActionProcessor();
-    actionProcessor.startMaze();
-
-    let item = this.getItem;
-    let flatlistColumn = this.getFlatListTamp;
     return (
-      <SafeAreaView style={styles.container}>
-        {flatlistColumn(item)}
-      </SafeAreaView>
+      <ImageBackground
+        source={require('./images/plane_background.jpg')}
+        style={{width: '100%', height: '100%'}}>
+        <StatusBar hidden={true} />
+        <View style={mazeStyles.mainContainer}>
+          <View style={mazeStyles.verticalContainer}>
+            {/*<Image*/}
+            {/*  source={require('./images/tiled_background.jpg')}*/}
+            {/*  style={{*/}
+            {/*    marginLeft: 45,*/}
+            {/*    marginTop: -5,*/}
+            {/*    width: 300,*/}
+            {/*    height: 300,*/}
+            {/*    position: 'absolute',*/}
+            {/*    justifyContent: 'center',*/}
+            {/*  }}*/}
+            {/*/>*/}
+            <DrawRows items={this._maze.rows} />
+          </View>
+
+          <View style={mazeStyles.buttonUp}>
+            <TouchableWithoutFeedback
+              onPressIn={() => {
+                this.upIsDown = true;
+              }}
+              onPressOut={() => {
+                this.upIsDown = false;
+              }}>
+              <Text style={mazeStyles.buttonBackground}>MOVE UP</Text>
+            </TouchableWithoutFeedback>
+          </View>
+
+          <View style={mazeStyles.buttonSecondRow}>
+            <TouchableWithoutFeedback
+              onPressIn={() => {
+                this.leftIsDown = true;
+              }}
+              onPressOut={() => {
+                this.leftIsDown = false;
+              }}>
+              <Text style={mazeStyles.buttonBackground}>MOVE LEFT</Text>
+            </TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback
+              onPressIn={() => {
+                this.downIsDown = true;
+              }}
+              onPressOut={() => {
+                this.downIsDown = false;
+              }}>
+              <Text style={mazeStyles.buttonBackground}>MOVE DOWN</Text>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPressIn={() => {
+                this.rightIsDown = true;
+              }}
+              onPressOut={() => {
+                this.rightIsDown = false;
+              }}>
+              <Text style={mazeStyles.buttonBackground}>MOVE RIGHT</Text>
+            </TouchableWithoutFeedback>
+          </View>
+        </View>
+      </ImageBackground>
     );
   }
 
-  getFlatList(renderItem) {
+  registerMovements() {
+    setInterval(() => {
+      if (this.anyButtonDown()) {
+        if (this.timeWait === 0 || this.timeWait > 5) {
+          this.applyMovements();
+          this.setState({count: 1});
+        }
+        this.timeWait++;
+      } else {
+        this.timeWait = 0;
+      }
+    }, MOVE_FREQ_MILLI);
+  }
+
+  applyMovements() {
+    if (this.upIsDown) {
+      this._mazeActionProcessor.moveUp();
+    }
+    if (this.leftIsDown) {
+      this._mazeActionProcessor.moveLeft();
+    }
+    if (this.downIsDown) {
+      this._mazeActionProcessor.moveDown();
+    }
+    if (this.rightIsDown) {
+      this._mazeActionProcessor.moveRight();
+    }
+  }
+
+  anyButtonDown() {
     return (
-      <FlatList
-        horizontal={true}
-        data={DATA}
-        renderItem={({datar}) => (
-          <FlatList
-            horizontal={false}
-            data={datar.data}
-            renderItem={({datac}) => renderItem(datac)}
-            keyExtractor={datac => datac.id}
-          />
-        )}
-        keyExtractor={datar => datar.id}
-      />
+      this.downIsDown || this.upIsDown || this.leftIsDown || this.rightIsDown
     );
   }
 
-  getFlatListTamp(renderItem) {
-    console.log(DATA[0].data[0].title);
+  moveRight() {
+    this._mazeActionProcessor.moveRight();
+    this.setState({count: 1});
+  }
+
+  moveUp() {
+    this._mazeActionProcessor.moveUp();
+    this.setState({count: 1});
+  }
+
+  sampleMaze() {
+    var i;
+    var j;
+    var rows = [];
+    let size = 25;
+    for (i = 0; i < size; i++) {
+      let cols = [];
+      for (j = 0; j < size; j++) {
+        // cols.push('' + (i * size + j));
+        cols.push('#');
+      }
+      rows.push(cols);
+    }
+    rows[0][0] = '*';
+    let maze = new MazeBuilder(rows).build();
+    return maze;
+  }
+
+  getFlatList(maze: Maze) {
     return (
       <FlatList
         horizontal={false}
-        data={DATA[0].data}
-        renderItem={datac => renderItem(datac.item)}
-        keyExtractor={item => item.id}
+        data={maze.rows}
+        extraData={this.state}
+        renderItem={rowVItem => (
+          <FlatList
+            horizontal={true}
+            data={rowVItem.item.items}
+            renderItem={cellVItem => <Item title={cellVItem.item.item} />}
+            keyExtractor={cell => cell.cellId}
+          />
+        )}
+        keyExtractor={row => row.rowId}
       />
     );
   }
 
-  getId(datac) {
-    return datac.id;
-  }
-
-  getItem(item) {
-    console.log('item id: ' + item.id);
-    return <Item title={item.title} />;
+  getFlatListWithViews() {
+    return (
+      <FlatList
+        scrollEnabled={false}
+        horizontal={false}
+        data={this._maze.rows}
+        extraData={this.state}
+        renderItem={rowVItem => <DrawRow item={rowVItem.item} />}
+        keyExtractor={row => row.rowId}
+      />
+    );
   }
 }
