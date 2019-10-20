@@ -107,7 +107,7 @@ export class MazeActionProcessor {
   }
 
   submitMove(move) {
-    var playerMoved = this._worldState._move_player(move);
+    var playerMoved = this._worldState.submit_player_action(move);
     console.log(playerMoved);
     this.maze = playerMoved
       ? this.worldToVisibleMaze(this._worldState)
