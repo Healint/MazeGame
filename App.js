@@ -14,9 +14,12 @@ import {Maze, GridRow, GridCell, MazeBuilder} from './MazeCommunication/Maze';
 import {MazeActionProcessor} from './MazeCommunication/MazeActionProcessor';
 
 const ASSET_MAP = {
-  '@': require('./images/koala.png'),
-  H: require('./images/penguin.png'),
-  L: require('./images/player.png'),
+  '@': require('./images/frances_male.png'),
+  H: require('./images/shadow.png'),
+  E: require('./images/open_door.png'),
+  LC: require('./images/hell_hound_new.png'),
+  LM: require('./images/puce.png'),
+  LSM: require('./images/misc_orb.png'),
   '0': require('./images/brick_brown_2.png'),
   '1': require('./images/acidic_floor_0.png'),
   '2': require('./images/bog_green_1_old.png'),
@@ -183,11 +186,13 @@ export default class MazeGame extends Component {
           <View style={{flexDirection: 'column'}}>
             <View
               style={{
-                backgroundColor: '#a00000',
+                backgroundColor: '#500000',
               }}>
-              <Text>TURN:{this._maze.turn}</Text>
-              <Text>HEALTH:{this._maze.playerLife}</Text>
-              <Text>{this._maze.message}</Text>
+              <Text style={{color: 'white'}}>TURN:{this._maze.turn}</Text>
+              <Text style={{color: 'white'}}>
+                HEALTH:{this._maze.playerLife}
+              </Text>
+              <Text style={{color: 'white'}}>{this._maze.message}</Text>
             </View>
             {this.buttonsLayout()}
           </View>
