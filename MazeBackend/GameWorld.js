@@ -8,9 +8,6 @@ export class WorldState {
   constructor(rows, columns) {
     this.player = new Player();
     this.maze = new Maze(rows, columns, this.player);
-    // let base_cell = this.maze.get_cell(0, 0);
-    // base_cell.character = this.player;
-    // this.player.cell = base_cell;
   }
 
   as_dict() {
@@ -27,13 +24,18 @@ export class WorldState {
     } else {
       throw action + ' is unknown';
     }
-    this.player.turns += 1;
 
+    this.end_of_turn_maintenance();
     return this.as_dict();
   }
 
+  end_of_turn_maintenance() {
+    this.player.turns += 1;
+    this.player.change_food(-1);
+  }
+
   _move_player(action: string) {
-    // returns true if chracter moves
+    // returns true if character moves
     // # check destination
     let move_x, move_y;
 

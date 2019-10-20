@@ -1,7 +1,7 @@
 import {Actor} from '../Actors/Actors';
 import {HurdleFactory} from '../Actors/Hurdles';
 import {LootFactory} from '../Actors/Loot';
-import {UNIVERSE_CONSTANTS} from './Constants';
+import {UNIVERSE_CONSTANTS} from '../Constants';
 
 export class Cell {
   // 0: Wall

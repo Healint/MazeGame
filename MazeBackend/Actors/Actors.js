@@ -1,3 +1,5 @@
+import {GAME_STATES} from '../Constants';
+
 export class Actor {
   char = 'x'; // base representation of the actor
   max_view_distance: number = 99; // how far can this hurdle be seen. 0 means invisible, 99 always visible
@@ -23,7 +25,7 @@ export class MazeExit extends Actor {
 
   process_interaction(player) {
     player.add_message('You have won');
-    player.game_state = 'WON';
+    player.game_state = GAME_STATES.WON;
     return false;
   }
 }
@@ -31,36 +33,46 @@ export class MazeExit extends Actor {
 export class Player extends Actor {
   // the player character, a very special actor
   // we're mixing the player and the general game state for simplicity
-  constructor(char: string, cell: *, hp: number, turns: number, actions: null) {
+  constructor(char: string, cell: *, hp: number, food: null) {
     super(cell);
     this.char = '@';
     this.hp = 100;
     this.turns = 0;
+    this.food = 100;
     this.actions = {};
-    this.game_state = 'PLAYING'; // can be PLAYING, DEAD, WON
+    this.game_state = GAME_STATES.PLAYING;
   }
 
   as_dict() {
     return {hp: this.hp, turns: this.turns, actions: this.actions};
   }
 
+  change_food(delta_food) {
+    this.food += delta_food;
+    if (this.food <= 0) {
+      this.food = 0;
+      this.game_state = GAME_STATES.DEAD;
+      this.add_message('You starved to death...');
+    }
+  }
+
   change_turns(delta_turns) {
     this.turns += delta_turns;
-    if (this.turns <= 0) {
-      this.turns = 0;
-    }
-    this.add_message('You now have ' + this.turns + ' turns');
   }
 
   change_hp(delta_hp) {
     this.hp += delta_hp;
     if (this.hp <= 0) {
+      this.add_message('You lose ' + delta_hp + ' hit points');
       this.hp = 0;
+      this.game_state = GAME_STATES.DEAD;
+      this.add_message(
+        'You die! Hell was stronger than you. Better luck next time !',
+      );
     } else if (this.hp > 100) {
       this.hp = 100;
+      this.add_message('You now have ' + this.hp + ' hit points');
     }
-
-    this.add_message('You now have ' + this.hp + ' hit points');
   }
 
   add_message(message) {

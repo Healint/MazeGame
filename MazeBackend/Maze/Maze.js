@@ -2,7 +2,7 @@ import {MazeExit} from '../Actors/Actors';
 import {get_random_number_range} from '../Lib/lib';
 import {Cell} from './Cell';
 import {Room} from './Room';
-import {UNIVERSE_CONSTANTS} from './Constants';
+import {UNIVERSE_CONSTANTS} from '../Constants';
 
 export class Maze {
   _nb_columns = null;
