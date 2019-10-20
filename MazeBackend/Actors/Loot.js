@@ -41,13 +41,11 @@ class LostCat extends Actor {
   }
 
   process_interaction(player) {
-    let turn_gain = get_random_number(3) + 3;
+    let food_delta = get_random_number(3) + 3;
     player.add_message(
-      'A cat, lost in the middle of daemons! Hmmm, delicious ! This unexpected food lets you play ' +
-        turn_gain +
-        ' more turns',
+      'A cat, lost in the middle of daemons! Hmmm, delicious ! This fills your belly (a bit)'
     );
-    player.change_turns(turn_gain);
+    player.change_food(food_delta);
     return false; // Loot always disappears
   }
 }

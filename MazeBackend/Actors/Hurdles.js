@@ -42,16 +42,16 @@ class Mine extends Actor {
 
   process_interaction(player) {
     let hp_loss = get_random_number(20) + 10;
-    let turn_loss = get_random_number(3) + 3;
+    let food_loss = get_random_number(3) + 3;
     player.add_message(
       'You stumbled upon a demonic mine ! You lose ' +
         hp_loss +
         'hit points and it takes ' +
-        turn_loss +
+        food_loss +
         ' turns to recover',
     );
     player.change_hp(-hp_loss);
-    player.change_turns(-turn_loss);
+    player.change_food(-food_loss);
     return false; // hurdles always disappear after interaction
   }
 }
@@ -64,13 +64,13 @@ class SuperGlue extends Actor {
   }
 
   process_interaction(player) {
-    let turn_loss = get_random_number(10) + 1;
+    let food_loss = get_random_number(10) + 1;
     player.add_message(
       'Demons have covered this place with glue! It takes ' +
-        turn_loss +
+        food_loss +
         ' to get out of it',
     );
-    player.change_turns(-turn_loss);
+    player.change_food(-food_loss);
     return false; // hurdles always disappear after interaction
   }
 }
