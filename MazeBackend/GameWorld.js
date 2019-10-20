@@ -1,5 +1,6 @@
 import {Maze} from './Maze/Maze';
 import {Player} from './Actors/Actors';
+import {FLOOR_TYPES} from './Constants';
 import 'react-native-console-time-polyfill';
 
 export class WorldState {
@@ -77,7 +78,7 @@ export class WorldState {
       return false;
     }
 
-    if (destination_cell.floor === 0) {
+    if (destination_cell.floor.char === FLOOR_TYPES.WALL) {
       this.player.add_message('Unable to move, trying to move to a wall');
       return false;
     }

@@ -20,6 +20,7 @@ export class Maze {
     console.log('Dungeon Carving Result: ' + success);
     this.cleanup();
     this.place_player_and_exit(player);
+    this.update_maze_visibility(player);
     console.log(this.toString());
     this.display_log();
   }
@@ -307,7 +308,7 @@ export class Maze {
           if (distance === undefined) {
             distance = cell.get_distance_to_other_cell(player.cell);
           }
-          if (player.view_distance < distance) {
+          if (player.view_distance > distance) {
             cell.floor.visible = true;
           }
         }

@@ -43,6 +43,7 @@ export class Player extends Actor {
     this.actions = {};
     this.game_state = GAME_STATES.PLAYING;
     this.view_distance = 5;
+    this.visible = true;
   }
 
   as_dict() {
