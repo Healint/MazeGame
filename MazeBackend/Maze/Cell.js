@@ -34,11 +34,11 @@ export class Cell {
       case 1:
         // extra chance of Loot in rooms
         extra_proba_hurdle = 0;
-        extra_proba_loot = 0.04;
+        extra_proba_loot = UNIVERSE_CONSTANTS.extra_proba_loot_room;
         break;
       case 2:
         // extra chance of Hurdle in corridors
-        extra_proba_hurdle = 0.09;
+        extra_proba_hurdle = UNIVERSE_CONSTANTS.extra_proba_hurdle_corridor;
         extra_proba_loot = 0;
         break;
     }
