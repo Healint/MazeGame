@@ -10,3 +10,9 @@ export const GAME_STATES = {
   DEAD: 'DEAD',
   PLAYING: 'PLAYING',
 };
+
+export const FLOOR_TYPES = {
+  WALL: 0,
+  ROOM: 1,
+  CORRIDOR: 2,
+};

@@ -3,6 +3,7 @@ import {GAME_STATES} from '../Constants';
 export class Actor {
   char = 'x'; // base representation of the actor
   max_view_distance: number = 99; // how far can this hurdle be seen. 0 means invisible, 99 always visible
+  visible: boolean = false;
 
   constructor(cell) {
     this.cell = cell;
@@ -41,10 +42,17 @@ export class Player extends Actor {
     this.food = 100;
     this.actions = {};
     this.game_state = GAME_STATES.PLAYING;
+    this.view_distance = 5;
   }
 
   as_dict() {
-    return {hp: this.hp, turns: this.turns, actions: this.actions};
+    return {
+      hp: this.hp,
+      turns: this.turns,
+      actions: this.actions,
+      game_state: this.game_state,
+      food: this.food,
+    };
   }
 
   change_food(delta_food) {
@@ -54,10 +62,6 @@ export class Player extends Actor {
       this.game_state = GAME_STATES.DEAD;
       this.add_message('You starved to death...');
     }
-  }
-
-  change_turns(delta_turns) {
-    this.turns += delta_turns;
   }
 
   change_hp(delta_hp) {

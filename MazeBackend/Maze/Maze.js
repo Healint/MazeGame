@@ -2,7 +2,8 @@ import {MazeExit} from '../Actors/Actors';
 import {get_random_number_range} from '../Lib/lib';
 import {Cell} from './Cell';
 import {Room} from './Room';
-import {UNIVERSE_CONSTANTS} from '../Constants';
+import {Floor} from './Floor';
+import {UNIVERSE_CONSTANTS, FLOOR_TYPES} from '../Constants';
 
 export class Maze {
   nb_columns = null;
@@ -56,9 +57,6 @@ export class Maze {
     for (let x = 0; x < this.nb_rows; x++) {
       for (let y = 0; y < this.nb_columns; y++) {
         let cell = this.get_cell(x, y);
-        if (cell.floor === 7) {
-          cell.floor = 0;
-        }
         cell.roll_actor();
       }
     }
@@ -94,7 +92,7 @@ export class Maze {
           var cell = null;
         } finally {
           if (cell != null) {
-            if (cell.floor !== 0) {
+            if (cell.floor.char !== FLOOR_TYPES.WALL) {
               return false;
             }
           }
@@ -106,7 +104,7 @@ export class Maze {
     for (let x = row_coord; x < row_coord + new_room.height; x++) {
       for (let y = col_coord; y < col_coord + new_room.width; y++) {
         let cell = this.get_cell(x, y);
-        cell.floor = 1;
+        cell.floor.char = FLOOR_TYPES.ROOM;
       }
     }
     new_room.x = row_coord;
@@ -122,7 +120,7 @@ export class Maze {
     let destination = room.get_neighbour(this);
     if (destination !== false) {
       // console.log(destination);
-      destination.floor = 2;
+      destination.floor.char = FLOOR_TYPES.CORRIDOR;
       room.has_corridor = true;
     } else {
       console.log('Unable to carve corridor');
@@ -138,7 +136,7 @@ export class Maze {
       neighbours.forEach(function(this_neighbour) {
         if (
           room.is_cell_from_room(this_neighbour) === false &&
-          this_neighbour.floor === 1
+          this_neighbour.floor.char === FLOOR_TYPES.ROOM
         ) {
           arrived = true;
           // console.log('We have arrived!!');
@@ -148,7 +146,10 @@ export class Maze {
       // find the destination candidates - they are useful even if we have arrived (to mark them)
       let destination_candidates = [];
       neighbours.forEach(function(this_neighbour) {
-        if (this_neighbour.floor === 0) {
+        if (
+          this_neighbour.floor.char === FLOOR_TYPES.WALL &&
+          this_neighbour.floor.carveable === true
+        ) {
           destination_candidates.push(this_neighbour);
         }
       });
@@ -170,15 +171,15 @@ export class Maze {
         for (let i = 0; i < destination_candidates.length; i++) {
           if (i === destination_id) {
             destination = destination_candidates[i];
-            destination.floor = 2;
+            destination.floor.char = FLOOR_TYPES.CORRIDOR;
           } else {
-            destination_candidates[i].floor = 7;
+            destination_candidates[i].floor.carveable = false;
           }
         }
       } else {
         // we have arrived. Before exiting, we should mark the destination candidates as uncarveable
         destination_candidates.forEach(function(this_candidate) {
-          this_candidate.floor = 7;
+          this_candidate.floor.carveable = false;
         });
         return true;
       }
@@ -204,6 +205,7 @@ export class Maze {
       }
     }
     this.rooms = rooms;
+    console.log(`${this.rooms.length} rooms carved`);
 
     // carve corridors until all rooms are connected
     let not_all_connected = true;
@@ -249,7 +251,8 @@ export class Maze {
     for (let i = 0; i < maze.length; i++) {
       let row = maze[i];
       for (let j = 0; j < row.length; j++) {
-        row[j] = new Cell(i, j, 0);
+        let floor = new Floor(FLOOR_TYPES.WALL);
+        row[j] = new Cell(i, j, floor);
       }
     }
 
@@ -280,6 +283,35 @@ export class Maze {
         }
       }
       console.log(row);
+    }
+  }
+
+  update_maze_visibility(player) {
+    // updates actor visibility
+    for (let x = 0; x < this.nb_rows; x++) {
+      for (let y = 0; y < this.nb_columns; y++) {
+        let cell = this.get_cell(x, y);
+        let distance;
+        // swap actor visibility
+        if (cell.actor !== undefined) {
+          distance = cell.get_distance_to_other_cell(player.cell);
+          if (cell.actor.max_view_distance < distance) {
+            cell.actor.visible = true;
+          } else {
+            cell.actor.visible = false;
+          }
+        }
+        // check floor visibility
+        if (cell.floor.visible === false) {
+          // once visible, floors can't be hidden, so we just have to check this case
+          if (distance === undefined) {
+            distance = cell.get_distance_to_other_cell(player.cell);
+          }
+          if (player.view_distance < distance) {
+            cell.floor.visible = true;
+          }
+        }
+      }
     }
   }
 }

@@ -39,6 +39,7 @@ export class WorldState {
   end_of_turn_maintenance() {
     this.player.turns += 1;
     this.player.change_food(-1);
+    this.maze.update_maze_visibility(this.player);
   }
 
   _move_player(action: string) {

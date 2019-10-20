@@ -1,4 +1,5 @@
 import {get_random_number} from '../Lib/lib';
+import {FLOOR_TYPES} from '../Constants';
 
 export class Room {
   x: number = null;
@@ -58,7 +59,7 @@ export class Room {
     while (true) {
       try {
         neighbour_candidate = this._get_random_neighbour(maze);
-        if (neighbour_candidate.floor === 0) {
+        if (neighbour_candidate.floor.char === FLOOR_TYPES.WALL) {
           break;
         }
       } catch (err) {

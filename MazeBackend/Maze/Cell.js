@@ -1,7 +1,8 @@
 import {Actor} from '../Actors/Actors';
 import {HurdleFactory} from '../Actors/Hurdles';
 import {LootFactory} from '../Actors/Loot';
-import {UNIVERSE_CONSTANTS} from '../Constants';
+import {UNIVERSE_CONSTANTS, FLOOR_TYPES} from '../Constants';
+import {Floor} from './Floor';
 
 export class Cell {
   // 0: Wall
@@ -10,18 +11,20 @@ export class Cell {
   // 3: Secret Door
   // 7: Uncarveable (when building only)
   actor: Actor;
-  floor: number;
+  floor: Floor;
   x: number;
   y: number;
 
   toString() {
-    return `Cell(x=${this.x},y=${this.y},actor=${this.actor})`;
+    return `Cell(x=${this.x},y=${this.y},floor=${this.floor},actor=${
+      this.actor
+    })`;
   }
 
   roll_actor() {
     // customize probability of rolling actors depending on the type of floor
     // if we implement difficulty scaling, it should be there
-    if (this.floor === 0) {
+    if (this.floor.char === FLOOR_TYPES.WALL) {
       // if uncarveable, we don't roll for hurdles or loot
       return;
     }
@@ -58,6 +61,13 @@ export class Cell {
     this.y = y;
     this.floor = floor;
     this.actor = actor;
+  }
+
+  get_distance_to_other_cell(cell) {
+    // var a = this.x - cell.x;
+    // var b = this.y - cell.y;
+    // return Math.sqrt( a*a + b*b );
+    return Math.hypot(this.x - cell.x, this.y - cell.y);
   }
 
   get_cardinal_neighbours(maze) {
