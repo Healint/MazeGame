@@ -13,35 +13,30 @@ import {Maze, GridRow, GridCell, MazeBuilder} from './MazeCommunication/Maze';
 import {MazeActionProcessor} from './MazeCommunication/MazeActionProcessor';
 
 const ASSET_MAP = {
-  '@': require('./images/koala.png'),
+  '@': require('./images/hero.png'),
   H: require('./images/penguin.png'),
   L: require('./images/player.png'),
-  '#': require('./images/tile_wider.png'),
+  '0': require('./images/brick_brown_2.png'),
+  '1': require('./images/acidic_floor_0.png'),
+  '2': require('./images/bog_green_1_old.png'),
+  IN: require('./images/hell_2.png'),
   '': '',
 };
 
 const MOVE_FREQ_MILLI = 70;
 
 function Item({cell}) {
-  let sourceImage = ASSET_MAP[cell.item];
+  let sourceImage = ASSET_MAP[cell.item.charActor];
+  let floorImage = ASSET_MAP[cell.item.charFloor];
 
   return (
     <View style={mazeStyles.item}>
-      {/*<Image*/}
-      {/*  source={require('./images/tile_wider.png')}*/}
-      {/*  style={{*/}
-      {/*    width: CELL_SIZE,*/}
-      {/*    height: CELL_SIZE,*/}
-      {/*    position: 'absolute',*/}
-      {/*    justifyContent: 'center',*/}
-      {/*  }}*/}
-      {/*/>*/}
-      <Text style={mazeStyles.title}>{cell.item}</Text>
-      {/*{sourceImage === '' ? (*/}
-      {/*  <Text style={mazeStyles.title}>{cell.item}</Text>*/}
-      {/*) : (*/}
-      {/*  <Image style={mazeStyles.actor} source={sourceImage} />*/}
-      {/*)}*/}
+      <Image style={mazeStyles.floor} source={floorImage} />
+      {sourceImage === '' ? (
+        <Text style={mazeStyles.title}> </Text>
+      ) : (
+        <Image style={mazeStyles.actor} source={sourceImage} />
+      )}
     </View>
   );
 }
@@ -100,8 +95,8 @@ const mazeStyles = StyleSheet.create({
   },
   item: {
     backgroundColor: '#000000',
-    paddingTop: 5,
-    paddingStart: 7,
+    paddingTop: 0,
+    paddingStart: 0,
     height: CELL_SIZE - 0,
     width: CELL_SIZE,
     marginVertical: 0,
@@ -117,6 +112,13 @@ const mazeStyles = StyleSheet.create({
     height: CELL_SIZE / 2,
   },
   actor: {
+    alignContent: 'center',
+    alignItems: 'center',
+    width: CELL_SIZE,
+    height: CELL_SIZE,
+  },
+  floor: {
+    position: 'absolute',
     alignContent: 'center',
     alignItems: 'center',
     width: CELL_SIZE,
