@@ -114,6 +114,7 @@ export class Maze {
   carve_corridor(room) {
     // will carve a corridor starting from room
     // select a random adjacent cell
+
     console.log('carving door');
     let destination = room.get_neighbour(this);
     if (destination !== false) {
@@ -153,6 +154,7 @@ export class Maze {
       if (arrived === false) {
         // if no destination exits in shame
         if (destination_candidates.length === 0) {
+          console.log('Out of destinations');
           break;
         }
         // else pick a destination and mark all other candidates as uncarveable
@@ -177,8 +179,8 @@ export class Maze {
         });
         return true;
       }
-      return false;
     }
+    return false;
   }
   carve_dungeon() {
     // carves the dungeon
@@ -268,7 +270,8 @@ export class Maze {
       for (let y = 0; y < this._nb_columns; y++) {
         let cell = this.get_cell(x, y);
         if (cell.actor !== undefined) {
-          row.push(cell.actor.char);
+          // row.push(cell.actor.char);
+          row.push(cell.floor);
         } else {
           row.push(cell.floor);
         }
