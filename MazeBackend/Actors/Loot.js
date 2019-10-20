@@ -19,7 +19,7 @@ export function LootFactory() {
 class Medkit extends Actor {
   constructor(cell) {
     super(cell);
-    this.char = 'L';
+    this.char = 'LM';
     this.max_view_distance = 3;
   }
 
@@ -36,7 +36,7 @@ class Medkit extends Actor {
 class LostCat extends Actor {
   constructor(cell) {
     super(cell);
-    this.char = 'L';
+    this.char = 'LC';
     this.max_view_distance = 6;
   }
 
@@ -53,7 +53,7 @@ class LostCat extends Actor {
 class SuperMedkit extends Actor {
   constructor(cell) {
     super(cell);
-    this.char = 'L';
+    this.char = 'LSM';
     this.max_view_distance = 4;
   }
 
