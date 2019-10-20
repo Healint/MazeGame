@@ -26,7 +26,17 @@ export class MazeActionProcessor {
       }
       rows.push(cols);
     }
-    return new MazeBuilder(rows).build();
+    let currentTurn = this._worldState.player.turns;
+    let actions = this._worldState.player.actions[currentTurn - 1];
+    var message = actions ? actions[0] : 'Running..';
+    message = message === 'Movement successful' ? 'Running..' : message;
+    let health = this._worldState.player.hp;
+    console.log(currentTurn, message, health);
+    return new MazeBuilder(rows)
+      .withTurn(currentTurn)
+      .withMessage(message)
+      .withPlayerLife(health)
+      .build();
   }
 
   getElementFromWorld(world, i, j) {

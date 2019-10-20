@@ -24,13 +24,13 @@ const ASSET_MAP = {
   '': '',
 };
 
-const MOVE_FREQ_MILLI = 70;
+const MOVE_FREQ_MILLI = 50;
 
 const BUTTON_HEIGHT = 50;
 const CELL_SIZE = 35;
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight =
-  Math.round(Dimensions.get('window').height) - BUTTON_HEIGHT * 2;
+  Math.round(Dimensions.get('window').height) - BUTTON_HEIGHT * 2 - 80;
 const MAX_COLUMNS = (screenWidth / CELL_SIZE) | 0;
 const MAX_ROWS = (screenHeight / CELL_SIZE) | 0;
 
@@ -93,12 +93,12 @@ const mazeStyles = StyleSheet.create({
     color: 'white',
   },
   buttonUp: {
-    height: BUTTON_HEIGHT,
+    paddingTop: 10,
+    height: BUTTON_HEIGHT + 20,
     justifyContent: 'center',
     flexDirection: 'row',
   },
   buttonSecondRow: {
-    margin: 10,
     height: BUTTON_HEIGHT,
     justifyContent: 'center',
     resizeMode: 'contain',
@@ -180,66 +180,89 @@ export default class MazeGame extends Component {
             <DrawRows items={this._maze.rows} />
           </View>
 
-          <View style={mazeStyles.buttonUp}>
-            <TouchableWithoutFeedback
-              onPressIn={() => {
-                this.clearMovements();
-                this.upIsDown = true;
-              }}
-              onPressOut={() => {
-                this.clearMovements();
+          <View style={{flexDirection: 'column'}}>
+            <View
+              style={{
+                backgroundColor: '#a00000',
               }}>
-              <Image
-                style={mazeStyles.buttonSecondRow}
-                source={require('./images/catacombs_3.png')}
-              />
-            </TouchableWithoutFeedback>
-          </View>
-
-          <View style={mazeStyles.buttonSecondRow}>
-            <TouchableWithoutFeedback
-              onPressIn={() => {
-                this.clearMovements();
-                this.leftIsDown = true;
-              }}
-              onPressOut={() => {
-                this.clearMovements();
-              }}>
-              <Image
-                style={mazeStyles.buttonSecondRow}
-                source={require('./images/catacombs_3.png')}
-              />
-            </TouchableWithoutFeedback>
-
-            <TouchableWithoutFeedback
-              onPressIn={() => {
-                this.clearMovements();
-                this.downIsDown = true;
-              }}
-              onPressOut={() => {
-                this.clearMovements();
-              }}>
-              <Image
-                style={mazeStyles.buttonSecondRow}
-                source={require('./images/catacombs_3.png')}
-              />
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
-              onPressIn={() => {
-                this.clearMovements();
-                this.rightIsDown = true;
-              }}
-              onPressOut={() => {
-                this.clearMovements();
-              }}>
-              <Image
-                style={mazeStyles.buttonSecondRow}
-                source={require('./images/catacombs_3.png')}
-              />
-            </TouchableWithoutFeedback>
+              <Text>TURN:{this._maze.turn}</Text>
+              <Text>HEALTH:{this._maze.playerLife}</Text>
+              <Text>{this._maze.message}</Text>
+            </View>
+            {this.buttonsLayout()}
           </View>
         </View>
       </ImageBackground>
+    );
+  }
+
+  buttonsLayout() {
+    return (
+      <>
+        <View style={mazeStyles.buttonUp}>
+          <TouchableWithoutFeedback
+            onPressIn={() => {
+              this.clearMovements();
+              this.upIsDown = true;
+            }}
+            onPressOut={() => {
+              this.clearMovements();
+            }}>
+            <Image
+              style={mazeStyles.buttonSecondRow}
+              source={require('./images/catacombs_3.png')}
+            />
+          </TouchableWithoutFeedback>
+        </View>
+
+        <View
+          style={{
+            height: BUTTON_HEIGHT + 10,
+            justifyContent: 'center',
+            flexDirection: 'row',
+          }}>
+          <TouchableWithoutFeedback
+            onPressIn={() => {
+              this.clearMovements();
+              this.leftIsDown = true;
+            }}
+            onPressOut={() => {
+              this.clearMovements();
+            }}>
+            <Image
+              style={mazeStyles.buttonSecondRow}
+              source={require('./images/catacombs_3.png')}
+            />
+          </TouchableWithoutFeedback>
+
+          <TouchableWithoutFeedback
+            onPressIn={() => {
+              this.clearMovements();
+              this.downIsDown = true;
+            }}
+            onPressOut={() => {
+              this.clearMovements();
+            }}>
+            <Image
+              style={mazeStyles.buttonSecondRow}
+              source={require('./images/catacombs_3.png')}
+            />
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPressIn={() => {
+              this.clearMovements();
+              this.rightIsDown = true;
+            }}
+            onPressOut={() => {
+              this.clearMovements();
+            }}>
+            <Image
+              style={mazeStyles.buttonSecondRow}
+              source={require('./images/catacombs_3.png')}
+            />
+          </TouchableWithoutFeedback>
+        </View>
+      </>
     );
   }
 
