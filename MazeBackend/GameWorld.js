@@ -1,6 +1,6 @@
 import {Maze} from './Maze/Maze';
 import {Player} from './Actors/Actors';
-import {FLOOR_TYPES} from './Constants';
+import {FLOOR_TYPES, GAME_STATES, VICTORY_LEVEL} from './Constants';
 import 'react-native-console-time-polyfill';
 
 export class WorldState {
@@ -9,6 +9,8 @@ export class WorldState {
 
   constructor(rows, columns) {
     console.time('WorldState Initialization');
+    this.rows = rows;
+    this.columns = columns;
     this.player = new Player();
     this.maze = new Maze(rows, columns, this.player);
     console.timeEnd('WorldState Initialization');
@@ -42,6 +44,27 @@ export class WorldState {
     this.player.turns += 1;
     this.player.change_food(-1);
     this.maze.update_maze_visibility(this.player);
+
+    // checks for victory
+    if (this.player.game_state === GAME_STATES.EXIT) {
+      if (this.player.level === VICTORY_LEVEL) {
+        // you've won
+        console.log('player has won');
+        this.player.score += this.player.food;
+        this.player.game_state = GAME_STATES.WON;
+        this.player.add_message('AMAAAAAZING ... YOU HAVE WON');
+      } else {
+        // go to next level
+        console.log('player reaching next level');
+        this.player.score += this.player.food;
+        this.player.level += 1;
+        this.player.hp = 100;
+        this.player.food = 100;
+        this.maze = new Maze(this.rows, this.columns, this.player);
+        this.player.add_message(`You have reached level ${this.player.level}`);
+        this.player.game_state = GAME_STATES.PLAYING;
+      }
+    }
   }
 
   _move_player(action: string) {

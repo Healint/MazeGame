@@ -5,7 +5,6 @@ export class Floor {
   // 1: Floor
   // 2: Corridor
   // 3: Secret Door
-  // 7: Uncarveable (when building only)
   char: string;
   visible: boolean;
   carveable: boolean;

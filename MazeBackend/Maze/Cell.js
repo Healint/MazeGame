@@ -9,7 +9,6 @@ export class Cell {
   // 1: Floor
   // 2: Corridor
   // 3: Secret Door
-  // 7: Uncarveable (when building only)
   actor: Actor;
   floor: Floor;
   x: number;
@@ -39,7 +38,7 @@ export class Cell {
         break;
       case 2:
         // extra chance of Hurdle in corridors
-        extra_proba_hurdle = 0.07;
+        extra_proba_hurdle = 0.09;
         extra_proba_loot = 0;
         break;
     }
