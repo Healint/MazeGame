@@ -20,7 +20,7 @@ const ASSET_MAP = {
   '': '',
 };
 
-const MOVE_FREQ_MILLI = 50;
+const MOVE_FREQ_MILLI = 70;
 
 function Item({cell}) {
   let sourceImage = ASSET_MAP[cell.item];
@@ -132,12 +132,21 @@ export default class HelloWorldApp extends Component {
   downIsDown = false;
   timeWait = 0;
 
+  _interval;
   _mazeActionProcessor;
+
+  componentDidMount(): void {
+    this.registerMovements();
+  }
+
+  componentWillUnmount(): void {
+    clearInterval(this._interval);
+    this._interval = null;
+  }
 
   render() {
     if (!this._mazeActionProcessor) {
       this._mazeActionProcessor = new MazeActionProcessor(0, 0);
-      this.registerMovements();
     }
     this._maze = this._mazeActionProcessor.currentMaze();
 
@@ -181,9 +190,11 @@ export default class HelloWorldApp extends Component {
           <View style={mazeStyles.buttonSecondRow}>
             <TouchableWithoutFeedback
               onPressIn={() => {
+                this.clearMovements();
                 this.leftIsDown = true;
               }}
               onPressOut={() => {
+                this.clearMovements();
                 this.leftIsDown = false;
               }}>
               <Text style={mazeStyles.buttonBackground}>MOVE LEFT</Text>
@@ -191,18 +202,22 @@ export default class HelloWorldApp extends Component {
 
             <TouchableWithoutFeedback
               onPressIn={() => {
+                this.clearMovements();
                 this.downIsDown = true;
               }}
               onPressOut={() => {
+                this.clearMovements();
                 this.downIsDown = false;
               }}>
               <Text style={mazeStyles.buttonBackground}>MOVE DOWN</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback
               onPressIn={() => {
+                this.clearMovements();
                 this.rightIsDown = true;
               }}
               onPressOut={() => {
+                this.clearMovements();
                 this.rightIsDown = false;
               }}>
               <Text style={mazeStyles.buttonBackground}>MOVE RIGHT</Text>
@@ -213,18 +228,27 @@ export default class HelloWorldApp extends Component {
     );
   }
 
+  clearMovements() {
+    this.upIsDown = false;
+    this.downIsDown = false;
+    this.rightIsDown = false;
+    this.leftIsDown = false;
+  }
+
   registerMovements() {
-    setInterval(() => {
-      if (this.anyButtonDown()) {
-        if (this.timeWait === 0 || this.timeWait > 5) {
-          this.applyMovements();
-          this.setState({count: 1});
+    if (!this._interval) {
+      this._interval = setInterval(() => {
+        if (this.anyButtonDown()) {
+          if (this.timeWait === 0 || this.timeWait > 5) {
+            this.applyMovements();
+            this.setState({count: 1});
+          }
+          this.timeWait++;
+        } else {
+          this.timeWait = 0;
         }
-        this.timeWait++;
-      } else {
-        this.timeWait = 0;
-      }
-    }, MOVE_FREQ_MILLI);
+      }, MOVE_FREQ_MILLI);
+    }
   }
 
   applyMovements() {
@@ -248,15 +272,15 @@ export default class HelloWorldApp extends Component {
     );
   }
 
-  moveRight() {
-    this._mazeActionProcessor.moveRight();
-    this.setState({count: 1});
-  }
-
-  moveUp() {
-    this._mazeActionProcessor.moveUp();
-    this.setState({count: 1});
-  }
+  // moveRight() {
+  //   this._mazeActionProcessor.moveRight();
+  //   this.setState({count: 1});
+  // }
+  //
+  // moveUp() {
+  //   this._mazeActionProcessor.moveUp();
+  //   this.setState({count: 1});
+  // }
 
   sampleMaze() {
     var i;
