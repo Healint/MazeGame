@@ -1,7 +1,7 @@
 export class MazeBuilder {
   data: Array<Array<String>>;
 
-  constructor(data: Array<Array<String>>) {
+  constructor(data: Array<Array<Element>>) {
     this.data = data;
   }
 
@@ -11,7 +11,7 @@ export class MazeBuilder {
       var gridRow = new GridRow('' + number, []);
       gridRows.push(gridRow);
       items.forEach((item, idx, data1) => {
-        gridRow.items.push(new GridCell('' + idx, item));
+        gridRow.items.push(new GridCell(idx, item));
       });
     });
     return new Maze('Awesome maze', gridRows);
@@ -40,10 +40,36 @@ export class GridRow {
 
 export class GridCell {
   cellId: String;
-  item: String;
+  item: Element;
 
-  constructor(cellId: String, item: String) {
+  constructor(cellId: Element, item: String) {
     this.cellId = cellId;
     this.item = item;
+  }
+}
+
+export class Element {
+  _charFloor;
+  _charActor;
+
+  constructor(charFloor, charActor) {
+    this._charFloor = charFloor;
+    this._charActor = charActor;
+  }
+
+  get charFloor() {
+    return this._charFloor;
+  }
+
+  set charFloor(value) {
+    this._charFloor = value;
+  }
+
+  get charActor() {
+    return this._charActor;
+  }
+
+  set charActor(value) {
+    this._charActor = value;
   }
 }

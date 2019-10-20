@@ -1,7 +1,7 @@
-import {MazeBuilder} from './Maze';
+import {Element, MazeBuilder} from './Maze';
 import {WorldState} from '../MazeBackend/GameWorld';
 
-const GRID_HEIGHT = 9;
+const GRID_HEIGHT = 16;
 const GRID_WIDTH = 9;
 
 export class MazeActionProcessor {
@@ -24,7 +24,7 @@ export class MazeActionProcessor {
       let cols = [];
       //todo zeeshan remove this when bug is fixed
       for (j = 0; j < GRID_WIDTH; j++) {
-        let ch = this.getCharFromWorld(world, i, j);
+        let ch = this.getElementFromWorld(world, i, j);
         cols.push(ch);
       }
       rows.push(cols);
@@ -32,22 +32,25 @@ export class MazeActionProcessor {
     return new MazeBuilder(rows).build();
   }
 
-  getCharFromWorld(world, i, j) {
+  getElementFromWorld(world, i, j) {
     let cell = world.maze._map[i][j];
     let floor = cell.floor;
     let actor = cell.actor;
     let character = cell.character;
     var ch = '';
+    var fl = '';
     if (character) {
       ch = character.char;
     } else if (actor) {
-      ch = actor.visible ? actor.char : '';
-    } else if (floor) {
-      ch = floor.visible ? floor.char : '';
-    } else {
-      console.log('actor not known');
+      ch = actor.visible ? actor.char : 'IN';
     }
-    return ch;
+    if (floor) {
+      fl = floor.visible ? floor.char : 'IN';
+    } else {
+      console.log('floor not available');
+    }
+    // console.log(ch + ' ' + fl);
+    return new Element(fl, ch);
   }
 
   //todo zeeshan remove this
