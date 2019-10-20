@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   ImageBackground,
   Image,
+  Dimensions,
   StatusBar,
 } from 'react-native';
 import {Maze, GridRow, GridCell, MazeBuilder} from './MazeCommunication/Maze';
@@ -23,7 +24,15 @@ const ASSET_MAP = {
   '': '',
 };
 
-const MOVE_FREQ_MILLI = 70;
+const MOVE_FREQ_MILLI = 50;
+
+const BUTTON_HEIGHT = 50;
+const CELL_SIZE = 35;
+const screenWidth = Math.round(Dimensions.get('window').width);
+const screenHeight =
+  Math.round(Dimensions.get('window').height) - BUTTON_HEIGHT * 2 - 80;
+const MAX_COLUMNS = (screenWidth / CELL_SIZE) | 0;
+const MAX_ROWS = (screenHeight / CELL_SIZE) | 0;
 
 function Item({cell}) {
   let sourceImage = ASSET_MAP[cell.item.charActor];
@@ -31,7 +40,11 @@ function Item({cell}) {
 
   return (
     <View style={mazeStyles.item}>
-      <Image style={mazeStyles.floor} source={floorImage} />
+      {cell.item.charFloor !== 'IN' ? (
+        <Image style={mazeStyles.floor} source={floorImage} />
+      ) : (
+        <Text style={mazeStyles.title}> </Text>
+      )}
       {sourceImage === '' ? (
         <Text style={mazeStyles.title}> </Text>
       ) : (
@@ -61,9 +74,6 @@ function DrawRows({items}) {
   });
 }
 
-const BUTTON_HEIGHT = 50;
-const CELL_SIZE = 30;
-
 const mazeStyles = StyleSheet.create({
   mainContainer: {
     marginTop: 20,
@@ -78,23 +88,24 @@ const mazeStyles = StyleSheet.create({
     flexDirection: 'row',
   },
   buttonBackground: {
-    backgroundColor: '#f9c2ff',
+    backgroundColor: '#f9c2ff00',
     margin: 2,
     color: 'white',
   },
   buttonUp: {
-    marginTop: 10,
-    height: BUTTON_HEIGHT,
+    paddingTop: 10,
+    height: BUTTON_HEIGHT + 20,
     justifyContent: 'center',
     flexDirection: 'row',
   },
   buttonSecondRow: {
     height: BUTTON_HEIGHT,
     justifyContent: 'center',
+    resizeMode: 'contain',
     flexDirection: 'row',
   },
   item: {
-    backgroundColor: '#000000',
+    backgroundColor: '#00000000',
     paddingTop: 0,
     paddingStart: 0,
     height: CELL_SIZE - 1,
@@ -126,7 +137,7 @@ const mazeStyles = StyleSheet.create({
   },
 });
 
-export default class HelloWorldApp extends Component {
+export default class MazeGame extends Component {
   _maze;
   rightIsDown = false;
   leftIsDown = false;
@@ -148,7 +159,10 @@ export default class HelloWorldApp extends Component {
 
   render() {
     if (!this._mazeActionProcessor) {
-      this._mazeActionProcessor = new MazeActionProcessor(0, 0);
+      this._mazeActionProcessor = new MazeActionProcessor(
+        MAX_COLUMNS,
+        MAX_ROWS,
+      );
     }
     this._maze = this._mazeActionProcessor.currentMaze();
 
@@ -158,75 +172,97 @@ export default class HelloWorldApp extends Component {
     };
     return (
       <ImageBackground
-        source={require('./images/plane_background.jpg')}
+        source={require('./images/hell_tiled_background.png')}
         style={{width: '100%', height: '100%'}}>
         <StatusBar hidden={true} />
         <View style={mazeStyles.mainContainer}>
           <View style={mazeStyles.verticalContainer}>
-            {/*<Image*/}
-            {/*  source={require('./images/tiled_background.jpg')}*/}
-            {/*  style={{*/}
-            {/*    marginLeft: 45,*/}
-            {/*    marginTop: -5,*/}
-            {/*    width: 300,*/}
-            {/*    height: 300,*/}
-            {/*    position: 'absolute',*/}
-            {/*    justifyContent: 'center',*/}
-            {/*  }}*/}
-            {/*/>*/}
             <DrawRows items={this._maze.rows} />
           </View>
 
-          <View style={mazeStyles.buttonUp}>
-            <TouchableWithoutFeedback
-              onPressIn={() => {
-                this.upIsDown = true;
-              }}
-              onPressOut={() => {
-                this.upIsDown = false;
+          <View style={{flexDirection: 'column'}}>
+            <View
+              style={{
+                backgroundColor: '#a00000',
               }}>
-              <Text style={mazeStyles.buttonBackground}>MOVE UP</Text>
-            </TouchableWithoutFeedback>
-          </View>
-
-          <View style={mazeStyles.buttonSecondRow}>
-            <TouchableWithoutFeedback
-              onPressIn={() => {
-                this.clearMovements();
-                this.leftIsDown = true;
-              }}
-              onPressOut={() => {
-                this.clearMovements();
-                this.leftIsDown = false;
-              }}>
-              <Text style={mazeStyles.buttonBackground}>MOVE LEFT</Text>
-            </TouchableWithoutFeedback>
-
-            <TouchableWithoutFeedback
-              onPressIn={() => {
-                this.clearMovements();
-                this.downIsDown = true;
-              }}
-              onPressOut={() => {
-                this.clearMovements();
-                this.downIsDown = false;
-              }}>
-              <Text style={mazeStyles.buttonBackground}>MOVE DOWN</Text>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
-              onPressIn={() => {
-                this.clearMovements();
-                this.rightIsDown = true;
-              }}
-              onPressOut={() => {
-                this.clearMovements();
-                this.rightIsDown = false;
-              }}>
-              <Text style={mazeStyles.buttonBackground}>MOVE RIGHT</Text>
-            </TouchableWithoutFeedback>
+              <Text>TURN:{this._maze.turn}</Text>
+              <Text>HEALTH:{this._maze.playerLife}</Text>
+              <Text>{this._maze.message}</Text>
+            </View>
+            {this.buttonsLayout()}
           </View>
         </View>
       </ImageBackground>
+    );
+  }
+
+  buttonsLayout() {
+    return (
+      <>
+        <View style={mazeStyles.buttonUp}>
+          <TouchableWithoutFeedback
+            onPressIn={() => {
+              this.clearMovements();
+              this.upIsDown = true;
+            }}
+            onPressOut={() => {
+              this.clearMovements();
+            }}>
+            <Image
+              style={mazeStyles.buttonSecondRow}
+              source={require('./images/catacombs_3.png')}
+            />
+          </TouchableWithoutFeedback>
+        </View>
+
+        <View
+          style={{
+            height: BUTTON_HEIGHT + 10,
+            justifyContent: 'center',
+            flexDirection: 'row',
+          }}>
+          <TouchableWithoutFeedback
+            onPressIn={() => {
+              this.clearMovements();
+              this.leftIsDown = true;
+            }}
+            onPressOut={() => {
+              this.clearMovements();
+            }}>
+            <Image
+              style={mazeStyles.buttonSecondRow}
+              source={require('./images/catacombs_3.png')}
+            />
+          </TouchableWithoutFeedback>
+
+          <TouchableWithoutFeedback
+            onPressIn={() => {
+              this.clearMovements();
+              this.downIsDown = true;
+            }}
+            onPressOut={() => {
+              this.clearMovements();
+            }}>
+            <Image
+              style={mazeStyles.buttonSecondRow}
+              source={require('./images/catacombs_3.png')}
+            />
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPressIn={() => {
+              this.clearMovements();
+              this.rightIsDown = true;
+            }}
+            onPressOut={() => {
+              this.clearMovements();
+            }}>
+            <Image
+              style={mazeStyles.buttonSecondRow}
+              source={require('./images/catacombs_3.png')}
+            />
+          </TouchableWithoutFeedback>
+        </View>
+      </>
     );
   }
 
@@ -271,66 +307,6 @@ export default class HelloWorldApp extends Component {
   anyButtonDown() {
     return (
       this.downIsDown || this.upIsDown || this.leftIsDown || this.rightIsDown
-    );
-  }
-
-  // moveRight() {
-  //   this._mazeActionProcessor.moveRight();
-  //   this.setState({count: 1});
-  // }
-  //
-  // moveUp() {
-  //   this._mazeActionProcessor.moveUp();
-  //   this.setState({count: 1});
-  // }
-
-  sampleMaze() {
-    var i;
-    var j;
-    var rows = [];
-    let size = 25;
-    for (i = 0; i < size; i++) {
-      let cols = [];
-      for (j = 0; j < size; j++) {
-        // cols.push('' + (i * size + j));
-        cols.push('#');
-      }
-      rows.push(cols);
-    }
-    rows[0][0] = '*';
-    let maze = new MazeBuilder(rows).build();
-    return maze;
-  }
-
-  getFlatList(maze: Maze) {
-    return (
-      <FlatList
-        horizontal={false}
-        data={maze.rows}
-        extraData={this.state}
-        renderItem={rowVItem => (
-          <FlatList
-            horizontal={true}
-            data={rowVItem.item.items}
-            renderItem={cellVItem => <Item title={cellVItem.item.item} />}
-            keyExtractor={cell => cell.cellId}
-          />
-        )}
-        keyExtractor={row => row.rowId}
-      />
-    );
-  }
-
-  getFlatListWithViews() {
-    return (
-      <FlatList
-        scrollEnabled={false}
-        horizontal={false}
-        data={this._maze.rows}
-        extraData={this.state}
-        renderItem={rowVItem => <DrawRow item={rowVItem.item} />}
-        keyExtractor={row => row.rowId}
-      />
     );
   }
 }

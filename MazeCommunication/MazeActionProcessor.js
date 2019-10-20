@@ -1,35 +1,42 @@
 import {Element, MazeBuilder} from './Maze';
 import {WorldState} from '../MazeBackend/GameWorld';
 
-const GRID_HEIGHT = 16;
-const GRID_WIDTH = 9;
-
 export class MazeActionProcessor {
-  positionx = 0;
-  positiony = 0;
+  GRID_HEIGHT = 16;
+  GRID_WIDTH = 9;
   maze;
   _worldState;
 
-  constructor(positionx: number, positiony: number) {
-    this.positionx = positionx;
-    this.positiony = positiony;
-    this.initializeWorld(GRID_HEIGHT, GRID_WIDTH);
+  constructor(width: number, height: number) {
+    this.GRID_HEIGHT = height;
+    this.GRID_WIDTH = width;
+    this.initializeWorld(height, width);
   }
 
   worldToVisibleMaze(world: WorldState) {
     var i;
     var j;
     var rows = [];
-    for (i = 0; i < GRID_HEIGHT; i++) {
+    for (i = 0; i < this.GRID_HEIGHT; i++) {
       let cols = [];
       //todo zeeshan remove this when bug is fixed
-      for (j = 0; j < GRID_WIDTH; j++) {
+      for (j = 0; j < this.GRID_WIDTH; j++) {
         let ch = this.getElementFromWorld(world, i, j);
         cols.push(ch);
       }
       rows.push(cols);
     }
-    return new MazeBuilder(rows).build();
+    let currentTurn = this._worldState.player.turns;
+    let actions = this._worldState.player.actions[currentTurn - 1];
+    var message = actions ? actions[0] : 'Running..';
+    message = message === 'Movement successful' ? 'Running..' : message;
+    let health = this._worldState.player.hp;
+    console.log(currentTurn, message, health);
+    return new MazeBuilder(rows)
+      .withTurn(currentTurn)
+      .withMessage(message)
+      .withPlayerLife(health)
+      .build();
   }
 
   getElementFromWorld(world, i, j) {
@@ -64,7 +71,7 @@ export class MazeActionProcessor {
     var i;
     var j;
     var rows = [];
-    let size = GRID_WIDTH;
+    let size = this.GRID_WIDTH;
     for (i = 0; i < size; i++) {
       let cols = [];
       for (j = 0; j < size; j++) {
@@ -73,7 +80,14 @@ export class MazeActionProcessor {
       }
       rows.push(cols);
     }
-    return new MazeBuilder(rows).build();
+    let currentTurn = this._worldState.player.turns;
+    let message = this._worldState.player.actions[currentTurn];
+    let health = this._worldState.player.hp;
+    return new MazeBuilder(rows)
+      .withTurn(currentTurn)
+      .withMessage(message)
+      .withPlayerLife(health)
+      .build();
   }
 
   initializeWorld(height: number, width: number) {
