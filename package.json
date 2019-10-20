@@ -12,7 +12,8 @@
   "dependencies": {
     "core-js": "^3.3.2",
     "react": "16.9.0",
-    "react-native": "0.61.2"
+    "react-native": "0.61.2",
+    "react-native-console-time-polyfill": "^1.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",

@@ -118,7 +118,7 @@ export class Maze {
     console.log('carving door');
     let destination = room.get_neighbour(this);
     if (destination !== false) {
-      console.log(destination);
+      // console.log(destination);
       destination.floor = 2;
       room.has_corridor = true;
     } else {
@@ -127,7 +127,7 @@ export class Maze {
     }
 
     while (true) {
-      console.log('Digging Corridor');
+      // console.log('Digging Corridor');
       let neighbours = destination.get_cardinal_neighbours(this);
       let arrived = false;
 
@@ -138,7 +138,7 @@ export class Maze {
           this_neighbour.floor === 1
         ) {
           arrived = true;
-          console.log('We have arrived!!');
+          // console.log('We have arrived!!');
         }
       });
 
@@ -154,7 +154,7 @@ export class Maze {
       if (arrived === false) {
         // if no destination exits in shame
         if (destination_candidates.length === 0) {
-          console.log('Out of destinations');
+          // console.log('Out of destinations');
           break;
         }
         // else pick a destination and mark all other candidates as uncarveable
@@ -162,8 +162,8 @@ export class Maze {
           0,
           destination_candidates.length - 1,
         );
-        console.log(destination_candidates);
-        console.log('destination_id: ' + destination_id);
+        // console.log(destination_candidates);
+        // console.log('destination_id: ' + destination_id);
         for (let i = 0; i < destination_candidates.length; i++) {
           if (i === destination_id) {
             destination = destination_candidates[i];

@@ -29,22 +29,22 @@ export class Room {
     let y_pos;
     switch (direction) {
       case 1: // north
-        console.log('NORTH');
+        // console.log('NORTH');
         x_pos = this.x - 1;
         y_pos = this.y + get_random_number(this.width) - 1;
         break;
       case 2: // south
-        console.log('SOUTH');
+        // console.log('SOUTH');
         x_pos = this.x + this.height;
         y_pos = this.y + get_random_number(this.width) - 1;
         break;
       case 3: // east
-        console.log('EAST');
+        // console.log('EAST');
         x_pos = this.x + get_random_number(this.height) - 1;
         y_pos = this.y + this.width;
         break;
       case 4: // west
-        console.log('WEST');
+        // console.log('WEST');
         x_pos = this.x + get_random_number(this.height) - 1;
         y_pos = this.y - 1;
         break;
@@ -62,7 +62,7 @@ export class Room {
           break;
         }
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
 
       if (iterations > 10) {

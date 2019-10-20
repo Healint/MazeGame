@@ -1,13 +1,16 @@
 import {Maze} from './Maze/Maze';
 import {Player} from './Actors/Actors';
+import 'react-native-console-time-polyfill';
 
 export class WorldState {
   maze: Maze = null;
   player: Player = null;
 
   constructor(rows, columns) {
+    console.time('WorldState Initialization');
     this.player = new Player();
     this.maze = new Maze(rows, columns, this.player);
+    console.timeEnd('WorldState Initialization');
   }
 
   as_dict() {
@@ -19,6 +22,8 @@ export class WorldState {
   }
 
   submit_player_action(action: string) {
+    console.time('Backend Submit Action');
+
     if (['LEFT', 'RIGHT', 'UP', 'DOWN'].includes(action)) {
       this._move_player(action);
     } else {
@@ -26,7 +31,9 @@ export class WorldState {
     }
 
     this.end_of_turn_maintenance();
-    return this.as_dict();
+    let ret = this.as_dict();
+    console.timeEnd('Backend Submit Action');
+    return ret;
   }
 
   end_of_turn_maintenance() {
