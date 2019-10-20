@@ -13,7 +13,7 @@ import {Maze, GridRow, GridCell, MazeBuilder} from './MazeCommunication/Maze';
 import {MazeActionProcessor} from './MazeCommunication/MazeActionProcessor';
 
 const ASSET_MAP = {
-  '@': require('./images/hero.png'),
+  '@': require('./images/koala.png'),
   H: require('./images/penguin.png'),
   L: require('./images/player.png'),
   '0': require('./images/brick_brown_2.png'),
@@ -97,7 +97,7 @@ const mazeStyles = StyleSheet.create({
     backgroundColor: '#000000',
     paddingTop: 0,
     paddingStart: 0,
-    height: CELL_SIZE - 0,
+    height: CELL_SIZE - 1,
     width: CELL_SIZE,
     marginVertical: 0,
     marginHorizontal: 0,
