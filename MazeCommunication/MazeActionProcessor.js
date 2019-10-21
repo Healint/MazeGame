@@ -33,6 +33,7 @@ export class MazeActionProcessor {
     message = message === 'Movement successful' ? gameState : message;
     let health = this._worldState.player.hp;
     let food = this._worldState.player.food;
+    let level = this._worldState.player.level;
     console.log(currentTurn, message, health);
     return new MazeBuilder(rows)
       .withTurn(currentTurn)
@@ -40,6 +41,7 @@ export class MazeActionProcessor {
       .withPlayerLife(health)
       .withFood(food)
       .withGameState(gameState)
+      .withLevel(level)
       .build();
   }
 

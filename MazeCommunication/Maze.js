@@ -32,6 +32,11 @@ export class MazeBuilder {
     return this;
   }
 
+  withLevel(level: number) {
+    this._maze.level = level;
+    return this;
+  }
+
   build() {
     var gridRows = [];
     this.data.forEach((items, number, data) => {
@@ -53,6 +58,7 @@ export class Maze {
   playerLife: number;
   food: number;
   gameState: String;
+  level: number;
   rows: Array<GridRow>;
 
   constructor(name: String, rows: Array<GridRow>) {
