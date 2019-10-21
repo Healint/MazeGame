@@ -28,6 +28,10 @@ export class Cell {
       return;
     }
 
+    if (this.actor !== undefined) {
+      return;
+    }
+
     let extra_proba_hurdle = 0;
     let extra_proba_loot = 0;
     switch (this.floor) {

@@ -324,16 +324,16 @@ export class Maze {
       let row = [];
       for (let y = 0; y < this.nb_columns; y++) {
         let cell = this.get_cell(x, y);
-        // if (cell.actor && cell.actor.visible === true) {
-        if (cell.actor) {
-          // row.push(cell.actor.char);
+        if (cell.actor && cell.actor.visible === true) {
+          // if (cell.actor) {
+          row.push(cell.actor.char);
           // row.push(cell.floor);
-          row.push(0);
-          // } else if (cell.floor.visible === true) {
-        } else if (cell.marked === true) {
+          // row.push(0);
+        } else if (cell.floor.visible === true) {
+          // } else if (cell.marked === true) {
           row.push(cell.floor.char);
         } else {
-          row.push(0);
+          row.push(8);
         }
       }
       console.log(row);
@@ -373,6 +373,10 @@ export class Maze {
       let destination_cell = unique_destinations[h];
       // console.log(destination_cell)
       let line = get_cells_along_line(player.cell, destination_cell, this);
+
+      if (line[0] !== player.cell) {
+        line.reverse();
+      }
 
       for (let i = 0; i < line.length; i++) {
         let cell = line[i];
