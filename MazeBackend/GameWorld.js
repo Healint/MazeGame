@@ -37,7 +37,7 @@ export class WorldState {
     this.end_of_turn_maintenance(move_successful);
     let ret = this.as_dict();
     console.timeEnd('Backend Submit Action');
-    // this.maze.display_log();
+    console.log(`Action:${ret.player.actions[ret.player.turns - 1]}`);
     return ret;
   }
 
@@ -119,6 +119,7 @@ export class WorldState {
 
     if (destination_cell.floor.char === Constants.FLOOR_TYPES.WALL) {
       this.player.add_message('Unable to move, trying to move to a wall');
+      console.log('in movemenbt, wall detected');
       return false;
     }
 

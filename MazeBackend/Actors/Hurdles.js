@@ -58,6 +58,7 @@ class Mine extends Actor {
     );
     player.change_hp(-hp_loss);
     player.change_food(-food_loss);
+    player.turns -= food_loss;
     return false; // hurdles always disappear after interaction
   }
 }
