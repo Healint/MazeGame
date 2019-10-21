@@ -195,6 +195,10 @@ export default class MazeGame extends Component {
               <Text style={{color: 'white'}}>
                 HEALTH:{this._maze.playerLife}
               </Text>
+
+              <Text style={{color: 'white', position: 'absolute', left: '80%'}}>
+                LEVEL: {this._maze.level}/3
+              </Text>
               <Text style={{color: 'white'}}>FOOD:{this._maze.food}</Text>
               <Text style={{color: 'white', fontSize: 11}}>
                 TURN:{this._maze.turn}
@@ -221,6 +225,7 @@ export default class MazeGame extends Component {
   }
 
   gameReultMessage() {
+    this.clearMovements();
     return (
       <Text
         style={{
