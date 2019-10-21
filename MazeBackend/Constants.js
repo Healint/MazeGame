@@ -21,3 +21,8 @@ export const FLOOR_TYPES = {
 };
 
 export const VICTORY_LEVEL = 3;
+
+export const PLAYER = {
+  MAX_LIFE: 100,
+  START_FOOD: 50,
+};

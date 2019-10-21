@@ -1,6 +1,6 @@
 import {Maze} from './Maze/Maze';
 import {Player} from './Actors/Actors';
-import {FLOOR_TYPES, GAME_STATES, VICTORY_LEVEL} from './Constants';
+import * as Constants from './Constants';
 import 'react-native-console-time-polyfill';
 
 export class WorldState {
@@ -47,23 +47,23 @@ export class WorldState {
     this.maze.update_maze_visibility_blocking(this.player);
 
     // checks for victory
-    if (this.player.game_state === GAME_STATES.EXIT) {
-      if (this.player.level === VICTORY_LEVEL) {
+    if (this.player.game_state === Constants.GAME_STATES.EXIT) {
+      if (this.player.level === Constants.VICTORY_LEVEL) {
         // you've won
         console.log('player has won');
         this.player.score += this.player.food;
-        this.player.game_state = GAME_STATES.WON;
+        this.player.game_state = Constants.GAME_STATES.WON;
         this.player.add_message('AMAAAAAZING ... YOU HAVE WON');
       } else {
         // go to next level
         console.log('player reaching next level');
         this.player.score += this.player.food;
         this.player.level += 1;
-        this.player.hp = 100;
-        this.player.food = 100;
+        this.player.hp = Constants.PLAYER.MAX_LIFE;
+        this.player.food = Constants.PLAYER.START_FOOD;
         this.maze = new Maze(this.rows, this.columns, this.player);
         this.player.add_message(`You have reached level ${this.player.level}`);
-        this.player.game_state = GAME_STATES.PLAYING;
+        this.player.game_state = Constants.GAME_STATES.PLAYING;
       }
     }
   }
@@ -103,7 +103,7 @@ export class WorldState {
       return false;
     }
 
-    if (destination_cell.floor.char === FLOOR_TYPES.WALL) {
+    if (destination_cell.floor.char === Constants.FLOOR_TYPES.WALL) {
       this.player.add_message('Unable to move, trying to move to a wall');
       return false;
     }

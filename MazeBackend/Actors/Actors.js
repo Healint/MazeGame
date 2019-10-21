@@ -1,4 +1,4 @@
-import {GAME_STATES} from '../Constants';
+import * as Constants from '../Constants';
 
 export class Actor {
   char = 'x'; // base representation of the actor
@@ -33,7 +33,7 @@ export class MazeExit extends Actor {
 
   process_interaction(player) {
     player.add_message('You have found the exit !');
-    player.game_state = GAME_STATES.EXIT;
+    player.game_state = Constants.GAME_STATES.EXIT;
     return false;
   }
 }
@@ -44,15 +44,16 @@ export class Player extends Actor {
   constructor(char: string, cell: *, hp: number, food: null) {
     super(cell);
     this.char = '@';
-    this.hp = 100;
+    this.hp = Constants.PLAYER.MAX_LIFE;
     this.turns = 0;
-    this.food = 100;
+    this.food = Constants.PLAYER.START_FOOD;
     this.actions = {};
-    this.game_state = GAME_STATES.PLAYING;
+    this.game_state = Constants.GAME_STATES.PLAYING;
     this.view_distance = 5;
     this.visible = true;
     this.level = 1;
     this.score = 0;
+    this.items = null; // object to store items
   }
 
   as_dict() {
@@ -71,7 +72,7 @@ export class Player extends Actor {
     this.food += delta_food;
     if (this.food <= 0) {
       this.food = 0;
-      this.game_state = GAME_STATES.DEAD;
+      this.game_state = Constants.GAME_STATES.DEAD;
       this.add_message('You starved to death...');
     }
   }
@@ -81,12 +82,12 @@ export class Player extends Actor {
     if (this.hp <= 0) {
       this.add_message('You lose ' + delta_hp + ' hit points');
       this.hp = 0;
-      this.game_state = GAME_STATES.DEAD;
+      this.game_state = Constants.GAME_STATES.DEAD;
       this.add_message(
         'You die! Hell was stronger than you. Better luck next time !',
       );
-    } else if (this.hp > 100) {
-      this.hp = 100;
+    } else if (this.hp > Constants.PLAYER.MAX_LIFE) {
+      this.hp = Constants.PLAYER.MAX_LIFE;
       this.add_message('You now have ' + this.hp + ' hit points');
     }
   }
