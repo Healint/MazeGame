@@ -14,6 +14,7 @@ export class WorldState {
     this.player = new Player();
     this.maze = new Maze(rows, columns, this.player);
     console.timeEnd('WorldState Initialization');
+    // this.maze.show_all()
   }
 
   as_dict() {
