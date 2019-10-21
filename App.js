@@ -208,13 +208,12 @@ export default class MazeGame extends Component {
                   justifyContent: 'center',
                   width: '100%',
                 }}>
-                {this._maze.gameState !== 'PLAYING'
-                  ? this.gameReultMessage()
-                  : null}
                 {this.restartButton()}
               </View>
             </View>
-            {this.buttonsLayout()}
+            {this._maze.gameState === 'PLAYING'
+              ? this.buttonsLayout()
+              : this.gameReultMessage()}
           </View>
         </View>
       </ImageBackground>
