@@ -28,7 +28,7 @@ const ASSET_MAP = {
   '': '',
 };
 
-const MOVE_FREQ_MILLI = 50;
+const MOVE_FREQ_MILLI = 100;
 
 const BUTTON_HEIGHT = 50;
 const CELL_SIZE = 35;

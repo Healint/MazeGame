@@ -70,6 +70,17 @@ export class WorldState {
     }
   }
 
+  restart_level(new_player: boolean = false) {
+    // regenerate a level.
+    // if new_player, also generates a new player
+    if (new_player === true) {
+      this.player = new Player();
+    }
+    this.maze = new Maze(this.rows, this.columns, this.player);
+    this.player.add_message(`Restarting game`);
+    this.player.game_state = Constants.GAME_STATES.PLAYING;
+  }
+
   _move_player(action: string) {
     // returns true if character moves
     // # check destination
