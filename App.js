@@ -25,10 +25,11 @@ const ASSET_MAP = {
   '1': require('./images/acidic_floor_0.png'),
   '2': require('./images/bog_green_1_old.png'),
   IN: require('./images/hell_2.png'),
+  GB: require('./images/loot/boots_iron2.png'),
   '': '',
 };
 
-const MOVE_FREQ_MILLI = 50;
+const MOVE_FREQ_MILLI = 100;
 
 const BUTTON_HEIGHT = 40;
 const CELL_SIZE = 32;

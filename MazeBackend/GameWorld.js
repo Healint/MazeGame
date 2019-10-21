@@ -1,6 +1,6 @@
 import {Maze} from './Maze/Maze';
 import {Player} from './Actors/Actors';
-import {FLOOR_TYPES, GAME_STATES, VICTORY_LEVEL} from './Constants';
+import * as Constants from './Constants';
 import 'react-native-console-time-polyfill';
 
 export class WorldState {
@@ -26,46 +26,59 @@ export class WorldState {
 
   submit_player_action(action: string) {
     console.time('Backend Submit Action');
-
+    let move_successful;
     if (['LEFT', 'RIGHT', 'UP', 'DOWN'].includes(action)) {
-      this._move_player(action);
+      move_successful = this._move_player(action);
     } else {
       throw action + ' is unknown';
     }
 
-    this.end_of_turn_maintenance();
+    this.end_of_turn_maintenance(move_successful);
     let ret = this.as_dict();
     console.timeEnd('Backend Submit Action');
     // this.maze.display_log();
     return ret;
   }
 
-  end_of_turn_maintenance() {
-    this.player.turns += 1;
-    this.player.change_food(-1);
+  end_of_turn_maintenance(move_successful) {
+    if (move_successful) {
+      this.player.turns += 1;
+      this.player.change_food(-1);
+    }
     // this.maze.update_maze_visibility(this.player);
     this.maze.update_maze_visibility_blocking(this.player);
 
     // checks for victory
-    if (this.player.game_state === GAME_STATES.EXIT) {
-      if (this.player.level === VICTORY_LEVEL) {
+    if (this.player.game_state === Constants.GAME_STATES.EXIT) {
+      if (this.player.level === Constants.VICTORY_LEVEL) {
         // you've won
         console.log('player has won');
         this.player.score += this.player.food;
-        this.player.game_state = GAME_STATES.WON;
+        this.player.game_state = Constants.GAME_STATES.WON;
         this.player.add_message('AMAAAAAZING ... YOU HAVE WON');
       } else {
         // go to next level
         console.log('player reaching next level');
         this.player.score += this.player.food;
         this.player.level += 1;
-        this.player.hp = 100;
-        this.player.food = 100;
+        this.player.hp = Constants.PLAYER.MAX_LIFE;
+        this.player.food = Constants.PLAYER.START_FOOD;
         this.maze = new Maze(this.rows, this.columns, this.player);
         this.player.add_message(`You have reached level ${this.player.level}`);
-        this.player.game_state = GAME_STATES.PLAYING;
+        this.player.game_state = Constants.GAME_STATES.PLAYING;
       }
     }
+  }
+
+  restart_level(new_player: boolean = false) {
+    // regenerate a level.
+    // if new_player, also generates a new player
+    if (new_player === true) {
+      this.player = new Player();
+    }
+    this.maze = new Maze(this.rows, this.columns, this.player);
+    this.player.add_message(`Restarting game`);
+    this.player.game_state = Constants.GAME_STATES.PLAYING;
   }
 
   _move_player(action: string) {
@@ -103,7 +116,7 @@ export class WorldState {
       return false;
     }
 
-    if (destination_cell.floor.char === FLOOR_TYPES.WALL) {
+    if (destination_cell.floor.char === Constants.FLOOR_TYPES.WALL) {
       this.player.add_message('Unable to move, trying to move to a wall');
       return false;
     }

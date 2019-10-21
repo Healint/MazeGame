@@ -24,11 +24,17 @@ class Spikes extends Actor {
   }
 
   process_interaction(player) {
-    let hp_loss = get_random_number(10) + 5;
-    player.add_message(
-      `You walked on spikes ! You lose  ${hp_loss} hit points`,
-    );
-    player.change_hp(-hp_loss);
+    if (player.items.gravboots) {
+      player.add_message(
+        `The GRAV BOOTS let you FLY over these DEMONIC SPIKES! Exciting!`,
+      );
+    } else {
+      let hp_loss = get_random_number(10) + 5;
+      player.add_message(
+        `You walked on spikes ! You lose  ${hp_loss} hit points`,
+      );
+      player.change_hp(-hp_loss);
+    }
     return false; // hurdles always disappear after interaction
   }
 }
@@ -66,9 +72,9 @@ class SuperGlue extends Actor {
   process_interaction(player) {
     let food_loss = get_random_number(10) + 1;
     player.add_message(
-      'Demons have covered this place with glue! It takes ' +
+      'Demons have cast the shadow of HELL here ! This makes you surprisingly HUNGRY and you lose' +
         food_loss +
-        ' to get out of it',
+        ' food',
     );
     player.change_food(-food_loss);
     return false; // hurdles always disappear after interaction
