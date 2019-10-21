@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   StatusBar,
+  Button,
 } from 'react-native';
 import {Maze, GridRow, GridCell, MazeBuilder} from './MazeCommunication/Maze';
 import {MazeActionProcessor} from './MazeCommunication/MazeActionProcessor';
@@ -29,11 +30,11 @@ const ASSET_MAP = {
 
 const MOVE_FREQ_MILLI = 50;
 
-const BUTTON_HEIGHT = 50;
-const CELL_SIZE = 35;
+const BUTTON_HEIGHT = 40;
+const CELL_SIZE = 32;
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight =
-  Math.round(Dimensions.get('window').height) - BUTTON_HEIGHT * 2 - 80;
+  Math.round(Dimensions.get('window').height) - BUTTON_HEIGHT * 2 - 100;
 const MAX_COLUMNS = (screenWidth / CELL_SIZE) | 0;
 const MAX_ROWS = (screenHeight / CELL_SIZE) | 0;
 
@@ -187,17 +188,78 @@ export default class MazeGame extends Component {
             <View
               style={{
                 backgroundColor: '#500000',
+                height: 80,
+                margin: 5,
               }}>
-              <Text style={{color: 'white'}}>TURN:{this._maze.turn}</Text>
               <Text style={{color: 'white'}}>
                 HEALTH:{this._maze.playerLife}
               </Text>
-              <Text style={{color: 'white'}}>{this._maze.message}</Text>
+              <Text style={{color: 'white'}}>FOOD:{this._maze.food}</Text>
+              <Text style={{color: 'white', fontSize: 11}}>
+                TURN:{this._maze.turn}
+              </Text>
+              <Text style={{color: 'white', fontSize: 11}}>
+                {this._maze.message}
+              </Text>
+              <View
+                style={{
+                  position: 'absolute',
+                  justifyContent: 'center',
+                  width: '100%',
+                }}>
+                {this._maze.gameState !== 'PLAYING'
+                  ? this.gameReultMessage()
+                  : null}
+                {this.restartButton()}
+              </View>
             </View>
             {this.buttonsLayout()}
           </View>
         </View>
       </ImageBackground>
+    );
+  }
+
+  gameReultMessage() {
+    return (
+      <Text
+        style={{
+          color: 'white',
+          fontSize: 28,
+          alignSelf: 'center',
+        }}>
+        {this._maze.gameState === 'WON'
+          ? 'GREAT! YOU WON'
+          : 'YOU DIED. TOO BAD'}
+      </Text>
+    );
+  }
+
+  restartButton() {
+    return (
+      <View
+        style={{
+          justifyContent: 'center',
+          flexDirection: 'row',
+          marginTop: 10,
+        }}>
+        <Button
+          title={'RESTART'}
+          onPress={() => {
+            this._mazeActionProcessor = new MazeActionProcessor(
+              MAX_COLUMNS,
+              MAX_ROWS,
+            );
+            this._maze = this._mazeActionProcessor.currentMaze();
+            this.clearMovements();
+            this.setState({count: 1});
+          }}
+          style={{
+            width: 90,
+            alignSelf: 'center',
+          }}
+        />
+      </View>
     );
   }
 

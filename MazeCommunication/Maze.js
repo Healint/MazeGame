@@ -22,6 +22,16 @@ export class MazeBuilder {
     return this;
   }
 
+  withFood(food: number) {
+    this._maze.food = food;
+    return this;
+  }
+
+  withGameState(gameState: String) {
+    this._maze.gameState = gameState;
+    return this;
+  }
+
   build() {
     var gridRows = [];
     this.data.forEach((items, number, data) => {
@@ -41,6 +51,8 @@ export class Maze {
   turn: number;
   message: String;
   playerLife: number;
+  food: number;
+  gameState: String;
   rows: Array<GridRow>;
 
   constructor(name: String, rows: Array<GridRow>) {

@@ -28,14 +28,18 @@ export class MazeActionProcessor {
     }
     let currentTurn = this._worldState.player.turns;
     let actions = this._worldState.player.actions[currentTurn - 1];
-    var message = actions ? actions[0] : 'Running..';
-    message = message === 'Movement successful' ? 'Running..' : message;
+    let gameState = this._worldState.player.game_state;
+    var message = actions ? actions[0] : gameState;
+    message = message === 'Movement successful' ? gameState : message;
     let health = this._worldState.player.hp;
+    let food = this._worldState.player.food;
     console.log(currentTurn, message, health);
     return new MazeBuilder(rows)
       .withTurn(currentTurn)
       .withMessage(message)
       .withPlayerLife(health)
+      .withFood(food)
+      .withGameState(gameState)
       .build();
   }
 
