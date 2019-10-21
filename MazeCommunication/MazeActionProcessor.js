@@ -100,6 +100,11 @@ export class MazeActionProcessor {
     console.log('maze initialized');
   }
 
+  restartWorldState() {
+    this._worldState.restart_level();
+    this.maze = this.worldToVisibleMaze(this._worldState.maze);
+  }
+
   currentMaze() {
     return this.maze;
   }
