@@ -76,10 +76,14 @@ class GravBoots extends Actor {
   }
 
   process_interaction(player) {
-    player.items.gravboots = true;
-    player.add_message(
-      'You found GRAV BOOTS. You now hover over the ground. Avoiding spikes. Yup!',
-    );
+    if (player.items.gravboots === true) {
+      player.add_message('You already have GRAV BOOTS...');
+    } else {
+      player.items.gravboots = true;
+      player.add_message(
+        'You found GRAV BOOTS. You now hover over the ground. Avoiding spikes. Yup!',
+      );
+    }
     return false; // Loot always disappears
   }
 }

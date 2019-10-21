@@ -26,23 +26,25 @@ export class WorldState {
 
   submit_player_action(action: string) {
     console.time('Backend Submit Action');
-
+    let move_successful;
     if (['LEFT', 'RIGHT', 'UP', 'DOWN'].includes(action)) {
-      this._move_player(action);
+      move_successful = this._move_player(action);
     } else {
       throw action + ' is unknown';
     }
 
-    this.end_of_turn_maintenance();
+    this.end_of_turn_maintenance(move_successful);
     let ret = this.as_dict();
     console.timeEnd('Backend Submit Action');
     // this.maze.display_log();
     return ret;
   }
 
-  end_of_turn_maintenance() {
-    this.player.turns += 1;
-    this.player.change_food(-1);
+  end_of_turn_maintenance(move_successful) {
+    if (move_successful) {
+      this.player.turns += 1;
+      this.player.change_food(-1);
+    }
     // this.maze.update_maze_visibility(this.player);
     this.maze.update_maze_visibility_blocking(this.player);
 

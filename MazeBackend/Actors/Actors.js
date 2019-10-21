@@ -53,7 +53,7 @@ export class Player extends Actor {
     this.visible = true;
     this.level = 1;
     this.score = 0;
-    this.items = null; // object to store items
+    this.items = {}; // object to store items
   }
 
   as_dict() {
