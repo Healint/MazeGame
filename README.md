@@ -1,1 +1,3 @@
 # amazing
+
+Team: Zeeshan & Nicolas
